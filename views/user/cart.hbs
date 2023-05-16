@@ -1,0 +1,385 @@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{{!--
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script> --}}
+<style>
+  .quantity {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .quantity__minus,
+  .quantity__plus {
+    display: block;
+    width: 22px;
+    height: 23px;
+    margin: 0;
+    background: #dee0ee;
+    text-decoration: none;
+    text-align: center;
+    line-height: 23px;
+  }
+
+  .quantity__minus:hover,
+  .quantity__plus:hover {
+    background: #575b71;
+    color: #fff;
+  }
+
+  .quantity__minus {
+    border-radius: 3px 0 0 3px;
+  }
+
+  .quantity__plus {
+    border-radius: 0 3px 3px 0;
+  }
+
+  .quantity__input {
+    width: 32px;
+    height: 19px;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    border-top: 2px solid #dee0ee;
+    border-bottom: 2px solid #dee0ee;
+    border-left: 1px solid #dee0ee;
+    border-right: 2px solid #dee0ee;
+    background: #fff;
+    color: #8184a1;
+  }
+
+  .quantity__minus:link,
+  .quantity__plus:link {
+    color: #8184a1;
+  }
+
+  .quantity__minus:visited,
+  .quantity__plus:visited {
+    color: #fff;
+  }
+</style>
+
+<div class="goto-here">
+  <div class="hero-wrap hero-bread" style="background-image: url('images/bg_6.jpg');">
+    <div class="container">
+      <div class="row no-gutters slider-text align-items-center justify-content-center">
+        <div class="col-md-9 ftco-animate text-center">
+          <p class="breadcrumbs"><span class="mr-2"><a href="index.html">Home</a></span> <span>Cart</span></p>
+          <h1 class="mb-0 bread">CART</h1>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="ftco-section ftco-cart">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 ftco-animate">
+          <div class="cart-list">
+            <table class="table">
+              <thead class="thead-primary">
+                <tr class="text-center">
+                  <th>Remove</th>
+                  <th>Image</th>
+                  <th>Product Nam</th>
+                  <th>Price</th>
+                  <th>Quantity</th>
+                  <th>Total</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {{#each findCart.product}}
+                <tr class="text-center">
+                  <td class="product-remove"><a onclick="remove('{{productId._id}}')"><span class="ion-ios-close"></span></a></td>
+                  <td class="image-prod">
+                    <div class="img"><a href="/singleproduct?id={{productId._id}}"><img width="100px"
+                          src="http://res.cloudinary.com/dhelj3ru4/image/upload/v1684071806/{{productId.image.[0]}}.jpg" alt=""></a></div>
+                  </td>
+                  <td>
+                    <h6>{{productId.name}}</h6>
+                  </td>
+
+                  <td>
+                    <h6>{{productId.price}}</h6>
+
+                  </td>
+
+
+                  {{!-- <td><button class="btn">-</button>
+                    <h6>{{quantity}}</h6> <button class="btn">+</button>
+                  </td> --}}
+                  <td class="product_quantity">
+                    <div class="container">
+                      <button style="width: 25px;" id="decBtn"
+                        onclick="decrease('{{productId._id}}','{{productId._id}}_data-value')">-</button>
+
+                      <input id="{{productId._id}}_data-value" type="text" min=1 value="{{quantity}}" disabled
+                        style="width:3vw" />
+                      <button style="width: 25px;"
+                        onclick="increase('{{productId._id}}','{{productId._id}}_data-value')">+</button>
+                    </div>
+                  </td>
+
+
+                  <td class="total" id="price-total_{{productId._id}}"> {{totalPrice}}</td>
+                </tr><!-- END TR-->
+                {{/each}}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="row justify-content-start">
+        <div class="col col-lg-5 col-md-6 mt-5 cart-wrap ftco-animate">
+          <div class="cart-total mb-3">
+            <h3>Cart Totals</h3>
+            {{!-- <p class="d-flex">
+              <span>Subtotal</span>
+              <span id="{{productId._id}}_price_sub">${{grandTotal}}</span>
+            </p> --}}
+            <p class="d-flex">
+              <span>Delivery</span>
+              <span>$0.00</span>
+            </p>
+            <hr>
+            <p class="d-flex total-price">
+              <span>Total</span>
+              <span id="grandTotal1">${{grandTotal}}</span>
+            </p>
+          </div>
+          <p class="text-center"><a href="/checkout" class="btn btn-primary py-3 px-4">Proceed to Checkout</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <footer class="ftco-footer ftco-section">
+    <div class="container">
+      <div class="row">
+        <div class="mouse">
+          <a href="#" class="mouse-icon">
+            <div class="mouse-wheel"><span class="ion-ios-arrow-up"></span></div>
+          </a>
+        </div>
+      </div>
+      <div class="row mb-5">
+        <div class="col-md">
+          <div class="ftco-footer-widget mb-4">
+            <h2 class="ftco-heading-2">Minishop</h2>
+            <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia.</p>
+            <ul class="ftco-footer-social list-unstyled float-md-left float-lft mt-5">
+              <li class="ftco-animate"><a href="#"><span class="icon-twitter"></span></a></li>
+              <li class="ftco-animate"><a href="#"><span class="icon-facebook"></span></a></li>
+              <li class="ftco-animate"><a href="#"><span class="icon-instagram"></span></a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md">
+          <div class="ftco-footer-widget mb-4 ml-md-5">
+            <h2 class="ftco-heading-2">Menu</h2>
+            <ul class="list-unstyled">
+              <li><a href="#" class="py-2 d-block">Shop</a></li>
+              <li><a href="#" class="py-2 d-block">About</a></li>
+              <li><a href="#" class="py-2 d-block">Journal</a></li>
+              <li><a href="#" class="py-2 d-block">Contact Us</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="ftco-footer-widget mb-4">
+            <h2 class="ftco-heading-2">Help</h2>
+            <div class="d-flex">
+              <ul class="list-unstyled mr-l-5 pr-l-3 mr-4">
+                <li><a href="#" class="py-2 d-block">Shipping Information</a></li>
+                <li><a href="#" class="py-2 d-block">Returns &amp; Exchange</a></li>
+                <li><a href="#" class="py-2 d-block">Terms &amp; Conditions</a></li>
+                <li><a href="#" class="py-2 d-block">Privacy Policy</a></li>
+              </ul>
+              <ul class="list-unstyled">
+                <li><a href="#" class="py-2 d-block">FAQs</a></li>
+                <li><a href="#" class="py-2 d-block">Contact</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-md">
+          <div class="ftco-footer-widget mb-4">
+            <h2 class="ftco-heading-2">Have a Questions?</h2>
+            <div class="block-23 mb-3">
+              <ul>
+                <li><span class="icon icon-map-marker"></span><span class="text">203 Fake St. Mountain View, San
+                    Francisco, California, USA</span></li>
+                <li><a href="#"><span class="icon icon-phone"></span><span class="text">+2 392 3929 210</span></a></li>
+                <li><a href="#"><span class="icon icon-envelope"></span><span
+                      class="text">info@yourdomain.com</span></a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 text-center">
+
+          <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            Copyright &copy;
+            <script>document.write(new Date().getFullYear());</script> All rights reserved
+            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+          </p>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <!-- loader -->
+  <div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px">
+      <circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee" />
+      <circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10"
+        stroke="#F96D00" />
+    </svg></div>
+</div>
+
+
+<script src="sweetalert2.min.js"></script>
+<link rel="stylesheet" href="sweetalert2.min.css">
+<script src="sweetalert2.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+  function increase(id, quantity) {
+    const check = document.getElementById(`${id}_data-value`).value;
+    console.log(check)
+
+    $.ajax({
+      url: '/increment',
+      method: 'patch',
+      data: {
+        id: id,
+        check: check
+      },
+      success: (response) => {
+        if (response.success == false) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'the stoke limit reach!',
+          });
+        } else {
+          console.log(response)
+          $('#stoke').val(response.stock);
+          $('#grandTotal1').text(response.grandTotal)
+
+          $(`#${id}_data-value`).val(response.value1.quantity);
+          $(`#price-total_${id}`).html('<i class="fa fa-indian-rupee-sign fa-xl" style="color: #000000;"></i>' + response.totalPrice);
+          $(`#${id}_price_sub`).html('<i class="fa fa-indian-rupee-sign fa" style="color: #000000;"></i>' + response.subPrice);
+        }
+      },
+      error: (error) => {
+        alert(error);
+      }
+    });
+  }
+
+
+  function decrease(id, quantity) {
+    const check = document.getElementById(`${id}_data-value`).value;
+    console.log(check)
+
+    $.ajax({
+      url: '/decrement',
+      method: 'patch',
+      data: {
+        id: id,
+        check: check
+      },
+      success: (response) => {
+        console.log(response, '------data')
+        console.log(response.subPrice, '----', response.value1.totalPrice, '-----', response.value1.quantity, '-------', response.stock)
+        if (response.success == false) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'the stoke limit reach!',
+          });
+        } else {
+          $('#stoke').val(response.stock);
+          $('#grandTotal1').text(response.grandTotal)
+
+          $(`#${id}_data-value`).val(response.value1.quantity);
+          $('#price-total').html('<i class="fa fa-indian-rupee-sign fa-xl" style="color: #000000;"></i>' + response.subPrice);
+          $(`#price-total_${id}`).html('<i class="fa fa-indian-rupee-sign fa" style="color: #000000;"></i>' + response.value1.totalPrice);
+        }
+      },
+      error: (error) => {
+        alert(error);
+      }
+    });
+  }
+
+
+  function remove(id) {
+
+    $.ajax({
+      url: '/deleteCartproduct',
+      method: 'patch',
+      data: {
+        id: id,
+      },
+      success: (response) => {
+       
+        const swalWithBootstrapButtons = Swal.mixin({
+          customClass: {
+            confirmButton: 'btn btn-success',
+            cancelButton: 'btn btn-danger'
+          },
+          buttonsStyling: false
+        })
+
+        swalWithBootstrapButtons.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Yes, delete it!',
+          cancelButtonText: 'No, cancel!',
+          reverseButtons: true
+        }).then((result) => {
+           setTimeout(()=>{
+            location.reload()
+        },2000)
+        
+          if (result.isConfirmed) {
+            swalWithBootstrapButtons.fire(
+              'Deleted!',
+              'Your file has been deleted.',
+              'success'
+            )
+          } else if (
+            /* Read more about handling dismissals below */
+            result.dismiss === Swal.DismissReason.cancel
+          ) {
+            swalWithBootstrapButtons.fire(
+              'Cancelled',
+              'Your imaginary file is safe :)',
+              'error'
+            )
+          }
+        })
+
+
+      },
+      error: (error) => {
+        alert(error);
+      }
+    });
+  }
+
+
+
+</script>
+
+<script src="sweetalert2.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

@@ -1,0 +1,200 @@
+<div class="container border pt-5 mt-2">
+    <div class="d-flex justify-content-end">
+        <a href="/myorders" style="margin-right: 5px;"><button class="btn btn-dark">Back to My orders</button></a>
+        <a href="/userhome" ><button class="btn btn-dark" style="margin-right: 5px;">Back to Home</button></a>
+         <button onclick="printDiv('printMe')" class="btn btn-dark">Print Invoice</button>
+        </div>
+
+
+
+    
+<div class="container  mb-5 d-none  d-print-none">
+
+
+    <div class="d-flex justify-content-center row " id='printMe'>
+        <div class="col-md-10">
+            <div class="receipt bg-white p-3">
+                <h2 style="font-weight: 900;">Minishop</h2>
+                <h4 class="mt-2 mb-3">Your order is confirmed!</h4>
+                <h6 class="name">Hello {{username}},</h6><span class="fs-12 text-black-50">your order has been confirmed
+                    and
+                    will be shipped in two days</span>
+                <hr>
+                <div class="d-flex flex-row justify-content-between  order-details" >
+                    <div><span class="d-block fs-12">Order date</span><span class="font-weight-bold">{{orderDate}}</span></div>
+                    <div><span class="d-block fs-12">Order number</span><span
+                            class="font-weight-bold">{{orderDetails._id}}</span>
+                    </div>
+                    <div><span class="d-block fs-12">Payment method</span><span
+                            class="font-weight-bold">{{orderDetails.paymentMethod}}
+                        </span></div>
+                    <div><span class="d-block fs-12">Shipping Address</span><span
+                            class="font-weight-bold ">{{orderDetails.address.address}}</span><br>
+                        <span class="font-weight-bold ">{{orderDetails.address.city}},</span>
+                        <span class="font-weight-bold ">{{orderDetails.address.state}}</span><br>
+                        <span class="font-weight-bold ">{{orderDetails.address.pin}}</span><br>
+                        <span class="font-weight-bold">MOB:</span>
+                        <span class="font-weight-bold ">{{orderDetails.address.mobile}}</span>
+                    </div>
+                </div>
+                <hr>
+                {{#each orderDetails.product}}
+                <div class="d-flex justify-content-between align-items-center product-details">
+                    <div class="d-flex flex-row product-name-image"><img class="rounded"
+                            src="/productImages/{{productId.image.[0]}}" width="80">
+                        <div class="d-flex flex-column justify-content-between ml-2">
+                            <div><span class="d-block font-weight-bold p-name">{{productId.name}}</span><span
+                                    class="fs-12">{{productId.bname}}</span></div><span class="fs-12">Qty:
+                                {{quantity}}pcs</span>
+                        </div>
+                    </div>
+                    <div class="product-price">
+                        <h5>${{totalPrice}}</h5>
+                    </div>
+                </div>
+                 <hr>
+                {{/each}}
+               
+                <div class="mt-5 amount row">
+                    <div class="d-flex justify-content-center col-md-6"></div>
+                    <div class="col-md-6">
+                        <div class="billing">
+                            {{!-- <div class="d-flex justify-content-between"><span>Subtotal</span><span
+                                    class="font-weight-bold">$120</span></div> --}}
+                            <div class="d-flex justify-content-between mt-2"><span>Shipping fee</span><span
+                                    class="font-weight-bold">$0</span></div>
+                            <div class="d-flex justify-content-between mt-2"><span>Tax</span><span
+                                    class="font-weight-bold">$0</span></div>
+                            <div class="d-flex justify-content-between mt-2"><span
+                                    class="text-success">Discount</span><span
+                                    class="font-weight-bold text-success">$</span></div>
+                            <hr>
+                            <div class="d-flex justify-content-between mt-1"><span
+                                    class="font-weight-bold">Total</span><span
+                                    class="font-weight-bold text-success">${{orderDetails.finalAmount}}</span></div>
+                        </div>
+                    </div>
+
+                {{!-- <span class="d-block">Expected delivery date</span><span class="font-weight-bold text-success">12
+                    March 2020</span> --}}
+
+                </div><span class="d-block mt-3 text-black-50 fs-15">We will be sending a shipping
+                    confirmation email when the item is shipped!</span>
+                <hr>
+                <div class="d-flex justify-content-between align-items-center footer">
+                    <div class="thanks"><span class="d-block font-weight-bold">Thanks for shopping</span><span>Minishop
+                            team</span></div>
+                    <div class="d-flex flex-column justify-content-end align-items-end"><span
+                            class="d-block font-weight-bold">Need Help?</span><span>Call - 974493933</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function printDiv(divName) {
+        var printContents = document.getElementById(divName).innerHTML;
+        var originalContents = document.body.innerHTML;
+
+        document.body.innerHTML = printContents;
+
+        window.print();
+
+        document.body.innerHTML = originalContents;
+
+    }
+</script>
+
+
+
+
+<div class="container">
+<div class="d-flex flex-row justify-content-between  order-details p-4">
+    <div><span class="d-block fs-12">Order date</span><span class="font-weight-bold">{{orderDate}}</span></div>
+    <div><span class="d-block fs-12">Order number</span><span class="font-weight-bold">{{orderDetails._id}}</span>
+    </div>
+    <div><span class="d-block fs-12">Payment method</span><span class="font-weight-bold">{{orderDetails.paymentMethod}}
+        </span></div>
+    
+    <div><span class="d-block fs-12">Order status</span><span class="font-weight-bold">{{orderDetails.orderStatus}}
+        </span>
+
+      {{#if (eq orderDetails.orderStatus "delivered")}} 
+        <a href="/returnorder/?id={{orderDetails._id}}"><span class="d-block fs-12 btn btn-primary mt-3">Return</span></a>   
+      {{/if}}
+      {{#if (eq orderDetails.orderStatus "ordered")}} 
+        <a href="/cancelorder/?id={{orderDetails._id}}"><span class="d-block fs-12 btn btn-primary mt-3">Cancel</span></a>   
+      {{/if}}
+      {{#if (eq orderDetails.orderStatus "shipped")}} 
+        <a href="/cancelorder/?id={{orderDetails._id}}"><span class="d-block fs-12 btn btn-primary mt-3">Cancel</span></a>   
+      {{/if}}
+
+
+
+    </div>
+    
+    <div><span class="d-block fs-12">Shipping Address</span><span
+            class="font-weight-bold ">{{orderDetails.address.address}}</span><br>
+        <span class="font-weight-bold ">{{orderDetails.address.city}},</span>
+        <span class="font-weight-bold ">{{orderDetails.address.state}}</span><br>
+        <span class="font-weight-bold ">{{orderDetails.address.pin}}</span><br>
+        <span class="font-weight-bold">MOB:</span>
+        <span class="font-weight-bold ">{{orderDetails.address.mobile}}</span>
+        </d iv>
+    </div>
+
+</div>
+</div>
+
+
+
+
+<div class="container">
+    <div class="table-responsive">
+        <table class="table  table-hover">
+            <thead class="align-middle">
+                <tr>
+                    <th scope="col">Image</th>
+                    <th scope="col">Product Name</th>
+                    <th scope="col">Brand</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Total</th>
+
+
+
+                </tr>
+            </thead>
+            <tbody class="align-middle">
+                {{#each orderDetails.product}}
+                <tr>
+                    <td><a href="/singleproduct?id={{productId._id}}"><img style="width: 100px;" src="http://res.cloudinary.com/dhelj3ru4/image/upload/v1684071806/{{productId.image.[0]}}.jpg"></a></td>
+                    <td>{{productId.name}}</td>
+                    <td>{{productId.bname}}</td>
+                    <td>{{price}}</td>
+                    <td>{{quantity}}</td>
+                    <td>{{totalPrice}}</td>
+                </tr>
+                {{/each}}
+
+            </tbody>
+
+        </table>
+         <div class="w-90 d-flex justify-content-end">
+            <div class="" style="margin-right: 6rem;">
+                <span class="" style="font-weight: 600; font-size: 20px;">Discount :</span>
+                <span class="" style="font-weight: 600; font-size: 20px;">{{orderDetails.discount}}</span>
+            </div>
+        </div>
+        
+        <div class="w-90 d-flex justify-content-end">
+            <div class="" style="margin-right: 6rem;">
+                <span class="" style="font-weight: 600; font-size: 20px;">Total :</span>
+                <span class="" style="font-weight: 600; font-size: 20px;">{{orderDetails.finalAmount}}</span>
+            </div>
+        </div>
+    </div>
+
+    </div>

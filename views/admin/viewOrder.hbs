@@ -1,0 +1,76 @@
+<div class="container border pt-5 mt-2">
+    <div class="d-flex justify-content-end">
+        <a href="/admin/orders" style="margin-right: 5px;"><button class="btn btn-dark">Back to My orders</button></a>
+        <a href="/admin/home" ><button class="btn btn-dark">Back to Home</button></a>
+        </div>
+<div class="container">
+<div class="d-flex flex-row justify-content-between  order-details p-4">
+    <div><span class="d-block fs-12">Order date</span><span class="font-weight-bold">{{orderDate}}</span></div>
+    <div><span class="d-block fs-12">Order number</span><span class="font-weight-bold">{{orderDetails._id}}</span>
+    </div>
+    <div><span class="d-block fs-12">Payment method</span><span class="font-weight-bold">{{orderDetails.paymentMethod}}
+        </span></div>
+    
+    <div><span class="d-block fs-12">Order status</span><span class="font-weight-bold">{{orderDetails.orderStatus}}
+        </span>
+      {{!-- {{#if orderDetails.orderStatus=="delivered"}} 
+        <span class="d-block fs-12 btn">Cancel</span>
+      {{/if}} --}}
+    </div>
+    
+    <div><span class="d-block fs-12">Shipping Address</span><span
+            class="font-weight-bold ">{{orderDetails.address.address}}</span><br>
+        <span class="font-weight-bold ">{{orderDetails.address.city}},</span>
+        <span class="font-weight-bold ">{{orderDetails.address.state}}</span><br>
+        <span class="font-weight-bold ">{{orderDetails.address.pin}}</span><br>
+        <span class="font-weight-bold">MOB:</span>
+        <span class="font-weight-bold ">{{orderDetails.address.mobile}}</span>
+        </d iv>
+    </div>
+
+</div>
+</div>
+
+
+
+
+<div class="container">
+    <div class="table-responsive">
+        <table class="table  table-hover">
+            <thead class="align-middle">
+                <tr>
+                    <th scope="col">Image</th>
+                    <th scope="col">Product Name</th>
+                    <th scope="col">Brand</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Total</th>
+
+
+
+                </tr>
+            </thead>
+            <tbody class="align-middle">
+                {{#each orderDetails.product}}
+                <tr>
+                    <td><img style="width: 100px;" src="/productImages/{{productId.image.[0]}}"></td>
+                    <td>{{productId.name}}</td>
+                    <td>{{productId.bname}}</td>
+                    <td>{{price}}</td>
+                    <td>{{quantity}}</td>
+                    <td>{{totalPrice}}</td>
+                </tr>
+                {{/each}}
+
+            </tbody>
+
+        </table>
+        <div class="w-90 d-flex justify-content-end">
+            <div class="" style="margin-right: 6rem;">
+                <span class="" style="font-weight: 600; font-size: 20px;">Total :</span>
+                <span class="" style="font-weight: 600; font-size: 20px;">{{orderDetails.finalAmount}}</span>
+            </div>
+        </div>
+    </div>
+
+    </div>

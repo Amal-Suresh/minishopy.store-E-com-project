@@ -1,0 +1,74 @@
+<div class="my-5">
+    <h3 class="text-center">CATEGORY MANAGENENT</h3>
+</div>
+
+<form action="/admin/addcategory" method="post" class="row my-2 g-3">
+    <div class="col">
+        <input type="text" class="form-control" name="name" id="inputPassword2" placeholder="Enter Category Name">
+    </div>
+    <div class="col">
+        <button type="submit" class="btn btn-success mb-3">Add Category</button>
+    </div>
+</form> 
+
+    <div id="message-div" class="col-12">
+       
+            {{#if cae}}
+                <div style="color: rgb(255, 2, 2);">
+                    {{cae}}
+                </div>
+            {{/if}}
+            {{#if cne}}
+                <div style="color: rgb(5, 243, 69);">
+                     {{cne}}
+                </div>
+            {{/if}}
+        
+    </div>
+    
+    <script>
+            var toast = document.getElementById("message-div");
+            var messageOne = '{{cae}}'
+            var messageTwo = '{{cne}}'
+            if (messageOne) {
+                setTimeout(function () {
+                    toast.innerText = '';
+                }, 3000);
+            }else if(messageTwo){
+                setTimeout(function(){
+                    toast.innerText='';
+                },3000)
+            }
+        </script>
+
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <div class="table-responsive">
+                    <table class="table  table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">Category Name</th>
+                                <th scope="col">Delete</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each category}}
+                            <tr>
+                                <td>{{name}}</td>
+                                <td><a href="/admin/deletecategory/{{_id}}"><i
+                                            class="text-danger bi bi-x-circle-fill"></i></a></td>
+                                {{#if status}}
+                                <td><a href="/admin/unlistcategory/{{_id}}"><button class="btn btn-success">List</button></a>
+                                </td>
+                                {{else}}
+                                <td><a href="/admin/listcategory/{{_id}}"><button class="btn btn-danger">UnList</button></a>
+                                </td>
+                                {{/if}}
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>

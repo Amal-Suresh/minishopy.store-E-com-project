@@ -1,0 +1,120 @@
+<div class="col-12">
+    <div class="bg-light rounded h-100 mt-5 p-4">
+        <h6 class="mb-4">Order History</h6>
+        <div class="table-responsive">
+            <table class="table  table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">OrderID</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Payment</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">View</th>
+                        <th scope="col">Change</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each allOrders}}
+                    <tr>
+
+                        <td>{{_id}}</td>
+                        <td>{{date}}</td>
+                        <td>{{paymentMethod}}</td>
+                        <td>{{finalAmount}}</td>
+                        <td>{{orderStatus}}</td>
+
+                        <td>
+                            <div class="">
+                                <a href="/admin/vieworder/?id={{_id}}"><button class="btn btn-success ">view</button></a>
+
+                             </div>
+                        </td>
+                        <td class="p-0">
+                              {{#if (eq orderStatus "returned")}}
+                            <div class="dropdown btn-lg">
+                                <button class="btn btn-dark disabled dropdown-toggle" type="button" id="dropdownMenuButton"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                   change
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                </div>
+                            </div>
+                            {{/if}}
+                             {{#if (eq orderStatus "cancelled")}}
+                            <div class="dropdown btn-lg">
+                                <button class="btn btn-dark disabled dropdown-toggle" type="button" id="dropdownMenuButton"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                   change
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                </div>
+                            </div>
+                            {{/if}}
+                             {{#if (eq orderStatus "delivered")}}
+                            <div class="dropdown btn-lg">
+                                <button class="btn btn-dark disabled dropdown-toggle" type="button" id="dropdownMenuButton"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                   change
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                </div>
+                            </div>
+                            {{/if}}
+
+                            {{#if (eq orderStatus "ordered")}}
+                            <div class="dropdown btn-lg">
+                                <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                   change
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a class="dropdown-item" href="/admin/changetoshipped/?id={{_id}}">shipped</a>
+                                    <a class="dropdown-item" href="/admin/changecancelled/?id={{_id}}">cancel</a>
+
+                                </div>
+                            </div>
+                            {{/if}}
+
+                            {{#if (eq orderStatus "shipped")}}
+                            <div class="dropdown btn-lg">
+                                <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                   change
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a class="dropdown-item" href="/admin/changetodelivered/?id={{_id}}">delivered</a>
+                                    <a class="dropdown-item" href="/admin/changecancelled/?id={{_id}}">cancel</a>
+
+                                </div>
+                            </div>
+                            {{/if}}
+
+                            {{#if (eq orderStatus "requested for return")}}
+                            <div class="dropdown btn-lg">
+                                <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                   change
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a class="dropdown-item" href="/admin/acceptreturn/?id={{_id}}">accept return</a>
+                           
+
+                                </div>
+                            </div>
+                            {{/if}}
+
+
+
+                            </div>
+
+                        </td>
+
+
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

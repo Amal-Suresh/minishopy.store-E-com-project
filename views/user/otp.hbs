@@ -1,0 +1,31 @@
+<div class="container height-100 d-flex justify-content-center align-items-center">
+    <div class="position-relative">
+        <div class="card p-2 text-center">
+            <h6>Please enter the one time password <br> to verify your account</h6>
+            <div> <span>A code has been sent to</span> <small>{{email}}</small>
+            </div>
+            <form action="/checkotp" method="POST">
+                <div id="otp" class="inputs d-flex flex-row justify-content-center mt-2">
+                    <input class="m-2 text-center form-control rounded" type="text" name="val1" id="first"
+                        maxlength="1" />
+                    <input class="m-2 text-center form-control rounded" type="text" name="val2" id="second"
+                        maxlength="1" />
+                    <input class="m-2 text-center form-control rounded" type="text" name="val3" id="third"
+                        maxlength="1" />
+                    <input class="m-2 text-center form-control rounded" type="text" name="val4" id="fourth"
+                        maxlength="1" />
+                    <input class="m-2 text-center form-control rounded" type="text" name="val5" id="fifth"
+                        maxlength="1" />
+                    <input class="m-2 text-center form-control rounded" type="text" name="val6" id="sixth"
+                        maxlength="1" />
+                </div>
+                <div class="mt-4"> <input type="submit" value="Validate" class="btn btn-danger px-4 validate"></div>
+        </div>
+        </form>
+        <div class="text-center mt-4">
+            <span><i class="bi bi-stopwatch-fill fs-4 "></i></span>
+          <span class="d-block mobile-text text-danger fw-bold fs-3 " id="countdown"></span>
+          <a href="/resendotp"><span class="d-block  mobile-text" id="resend"></span></a>
+        </div>
+    </div>
+</div>

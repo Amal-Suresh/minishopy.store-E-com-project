@@ -1,0 +1,50 @@
+<div class="text-center py-4">
+    <h3>BANNER MANAGENENT</h3>
+</div>
+
+<div class="col-12">
+                        <div class="bg-light rounded h-100 p-4">
+                            <div class="d-flex justify-content-end my-3">
+                                <a href="/admin/addbanner"><button class="btn btn-success">Add New Banner</button></a>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table  table-hover">
+                                    <thead class="align-middle">
+                                        <tr>
+                                            <th scope="col">Image</th>
+                                            <th scope="col">Sub title</th>
+                                            <th scope="col">Title</th>
+                                            <th scope="col"  class="w-25">Discription</th>
+                                            <th scope="col">Url</th>
+                                            <th scope="col">Actions</th>
+                                            
+
+                                        </tr>
+                                    </thead>
+                                    <tbody class="align-middle">
+                                       {{#each bannerData}}
+                                        <tr>
+                                            <td><img style="width: 100px;" src="/productImages/{{image}}" alt="productImage"></td>
+                                            <td>{{subtitle}}</td>
+                                            <td>{{title}}</td>
+                                            <td  class="w-25">{{discription}}</td>
+                                            <td>{{url}}</td>
+                                            <td><a href="/admin/deletebanner/?id={{_id}}"><button class="btn btn-danger"><i class="bi bi-x-circle-fill "></i></button></a>
+                                            <a href="/admin/updatebanner/?id={{_id}}"><button class="btn btn-primary"><i class="bi bi-pencil-square"></i></button></i></a> 
+                                           
+                                            {{#if status}}
+                                            <a href="/admin/listbanner/?id={{_id}}"><button class="btn btn-success">List</button></a>
+                                            
+                                            {{else}}
+                                            <a href="/admin/unlistbanner/?id={{_id}}"><button class="btn btn-danger">Unlist</button></a> 
+                                           {{/if}}
+                                            </td>
+                                      
+                                           
+                                        </tr>
+                                        {{/each}}     
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>

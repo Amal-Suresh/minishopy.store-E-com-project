@@ -1,0 +1,37 @@
+<div class="col-12">
+                        <div class="bg-light rounded h-100 p-4">
+                            <h6 class="mb-4">Responsive Table</h6>
+                            <div class="table-responsive">
+                                <table class="table  table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">First Name</th>
+                                            <th scope="col">Last Name</th>
+                                            <th scope="col">Email</th>
+                                            <th scope="col">Mobile</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {{#each users}}
+                                        <tr>
+                                            <th scope="row">1</th>
+                                            <td>{{fname}}</td>
+                                            <td>{{lname}}</td>
+                                            <td>{{email}}</td>
+                                            <td>{{mobile}}</td>
+                                            <td>{{status}}</td>
+                                            {{#if status}}
+                                            <td><a href="/admin/blockuser/{{_id}}"><button class="btn btn-success">Block</button></a></td>
+                                            {{else}}
+                                            <td><a href="/admin/unblockuser/{{_id}}"><button class="btn btn-danger">UnBlock</button></a></td> 
+                                            {{/if}}
+                                        </tr>
+                                        {{/each}}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>

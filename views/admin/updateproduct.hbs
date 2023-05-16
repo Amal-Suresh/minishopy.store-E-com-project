@@ -1,0 +1,128 @@
+
+
+<div class="container mt-2">
+	<div class="row justify-content-center align-items-center text-center p-2">
+		<div class="m-1 col-sm-8 col-md-6 col-lg-4 shadow-sm p-3 mb-5 bg-white border rounded">
+			<div class="pt-1  pb-3">
+				<img class="rounded mx-auto d-block"
+					src="https://freelogovector.net/wp-content/uploads/logo-images-13/microsoft-cortana-logo-vector-73233.png"
+					alt="" width=70px height=70px>
+				<p class="text-center text-uppercase mt-1">UPDATE PRODUCT</p>
+				{{#with productData}}
+				<form class="form text-center" action="/admin/updateproduct/?id={{_id}}" method="POST"  onsubmit="return validateadd()" enctype="multipart/form-data" >	
+					<div class="form-group input-group-md">
+						<input type="text" class="form-control" value="{{name}}" name="name" aria-describedby="emailHelp"
+							placeholder="Product Name">
+					</div>
+					<div class="form-group input-group-md">
+						<input type="text" class="form-control" value="{{bname}}" name="brand" aria-describedby="emailHelp"
+							placeholder="Brand Name">
+					</div>
+
+					<div class="image-edit d-flex flex-row mb-3 ">
+						{{#each image}}
+							<div class="">
+								<img src="/productImages/{{this}}" alt="" style="width: 110px;">
+								<a href="/admin/changeimage/?id={{@root.productData._id}}&imageId={{this}}"><i class="bi bi-x-octagon-fill text-danger"></i></a>
+							</div>
+						{{/each}}
+					</div>
+
+					<div class="form-group input-group-md">
+						<input type="file" class="form-control" multiple name="image" placeholder="product img">	
+					</div>
+
+					<div class="form-group input-group-md">
+						<input type="number" class="form-control" value="{{price}}" name="price" placeholder="Price">	
+					</div>
+					
+					<div class="form-group input-group-md">
+						<input type="number" class="form-control" value="{{quantity}}" name="quantity" placeholder="Quantity">
+						
+					</div>
+                    <div class="form-group input-group-md ">
+                        <select class="form-select form-select-sm" name="category" aria-label=".form-select-sm example" style="width: 100%;height:38px; border-color:gray; border-radius: 3px">
+							<option value="{{category.name}}" selected>{{category.name}}</option>
+							{{/with}}
+							{{#each categoryData}}
+                             <option value="{{_id}}">{{name}}</option>
+							{{/each}}
+                        </select>
+                    </div>
+					<button class="btn btn-block btn-success mt-4" type="submit">
+						Update Product
+					</button>
+				</form>
+				
+			</div>
+		</div>
+
+				
+					
+						
+					
+				
+
+	</div>
+
+
+</div>
+<script>
+function validateadd(){
+   
+  var name=document.form.name.value;
+  var bame=document.form.brand.value;
+  var quantity=document.form.quantity.value;
+  var category=document.form.category.value;
+  var price=document.form.price.value;
+  var fileInput = document.getElementById('image-input');
+  var filePath = fileInput.value;
+  var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+
+
+  var nameerror= (/^[A-Za-z]+$/);
+  var numbererror= (/^[1-9]\d*$/);
+	
+  var error=document.getElementById("errorMessage-div");
+
+  if(name==""){
+      error.innerHTML='Please enter product name'
+      return false;
+  }
+  if(bame==""){
+      error.innerHTML='Please enter brand name'
+      return false;
+  }
+  if(nameerror.test(name)==false){
+    error.innerHTML='invalid product name'
+    return false;
+} 
+  if(nameerror.test(bame)==false){
+    error.innerHTML='invalid brand name'
+    return false;
+}
+ //if (!allowedExtensions.exec(filePath)) {
+ //   error.innerHTML='Please upload an image file (jpg, jpeg, png, or gif)';
+//    fileInput.value = '';
+ //   return false;
+//} 
+  if(numbererror.test(price)==false){
+    error.innerHTML='invalid price'
+    return false;
+} 
+
+  if(numbererror.test(quantity)==false){
+    error.innerHTML='invalid quantity'
+    return false;
+} 
+if(category=="Select Category"){
+      error.innerHTML='select a category'
+      return false;
+  }
+ 
+
+  
+  return true;
+
+}
+</script>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  {{#if otp}}
+  {{>otphead}}
+  {{/if}}
+  {{#if admin}}
+  {{>adminHead}}
+  {{/if}}
+  {{#if login}}
+  {{>loginRegister}}
+  {{/if}}
+  {{#if user}}
+  {{>userHead}}
+  {{/if}}
+
+</head>
+
+<body>
+  {{#if admin}}
+  {{>adminHeader}}
+  {{/if}}
+  {{#if user}}
+  {{>userNavbar}}
+  {{/if}}
+  {{{body}}}
+  {{#if user}}
+  {{>userScripts}}
+  {{/if}}
+  {{#if admin}}
+  {{>adminScripts}}
+  {{/if}}
+  {{#if otp}}
+  {{>otpScript}}
+  {{/if}}
+
+  <script src="https://checkout.razorpay.com/v1/checkout.js">
+  </script>
+</body>
+
+</html>

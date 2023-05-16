@@ -1,0 +1,234 @@
+<link href="https://fonts.googleapis.com/css?family=Nunito+Sans:400,400i,700,900&display=swap" rel="stylesheet">
+
+<style>
+    body {
+        background: #e7d05b;
+        margin: 0;
+        padding: 0;
+    }
+
+    h1 {
+        color: #3fb90b;
+        font-family: "Nunito Sans", "Helvetica Neue", sans-serif;
+        font-weight: 900;
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    p {
+        color: #404F5E;
+        font-family: "Nunito Sans", "Helvetica Neue", sans-serif;
+        font-size: 20px;
+        margin: 0;
+    }
+
+    i {
+        color: #3fb90b;
+        font-size: 40px;
+        line-height: 90px;
+        font-weight: bold;
+    }
+
+    .card {
+        background: #e7d05b;
+        display: inline-block;
+        margin: 0 auto;
+    }
+</style>
+
+<div class="d-flex justify-content-center align-item-center w-100">
+    <div class=" col-md-10 d-flex justify-content-center align-item-center">
+        <div class="card  text-center mt-5 p-1 " style="border: none;">
+            <div style="border-radius:90px; height:90px; width:90px; background: #F8FAF5; margin:0 auto;">
+                <i class="checkmark">✓</i>
+            </div>
+            <h1>Order Placed Successfully</h1>
+        </div>
+    </div>
+</div>
+
+
+<div class="container  mb-5">
+
+
+    <div class="d-flex justify-content-center row " id='printMe'>
+        <div class="col-md-10">
+            <div class="receipt bg-white p-3">
+                <h2 style="font-weight: 900;">Minishop</h2>
+                <h4 class="mt-2 mb-3">Your order is confirmed!</h4>
+                <h6 class="name">Hello {{username}},</h6><span class="fs-12 text-black-50">your order has been confirmed
+                    and
+                    will be shipped in two days</span>
+                <hr>
+                <div class="d-flex flex-row justify-content-between  order-details" >
+                    <div><span class="d-block fs-12">Order date</span><span class="font-weight-bold">{{orderDate}}</span></div>
+                    <div><span class="d-block fs-12">Order number</span><span
+                            class="font-weight-bold">{{orderDatas._id}}</span>
+                    </div>
+                    <div><span class="d-block fs-12">Payment method</span><span
+                            class="font-weight-bold">{{orderDatas.paymentMethod}}
+                        </span></div>
+                    <div><span class="d-block fs-12">Shipping Address</span><span
+                            class="font-weight-bold ">{{orderDatas.address.address}}</span><br>
+                        <span class="font-weight-bold ">{{orderDatas.address.city}},</span>
+                        <span class="font-weight-bold ">{{orderDatas.address.state}}</span><br>
+                        <span class="font-weight-bold ">{{orderDatas.address.pin}}</span><br>
+                        <span class="font-weight-bold">MOB:</span>
+                        <span class="font-weight-bold ">{{orderDatas.address.mobile}}</span>
+                    </div>
+                </div>
+                <hr>
+                {{#each orderDatas.product}}
+                <div class="d-flex justify-content-between align-items-center product-details">
+                    <div class="d-flex flex-row product-name-image"><img class="rounded"
+                            src="http://res.cloudinary.com/dhelj3ru4/image/upload/v1684071806/{{productId.image.[0]}}.jpg" width="80">
+                        <div class="d-flex flex-column justify-content-between ml-2">
+                            <div><span class="d-block font-weight-bold p-name">{{productId.name}}</span><span
+                                    class="fs-12">{{productId.bname}}</span></div><span class="fs-12">Qty:
+                                {{quantity}}pcs</span>
+                        </div>
+                    </div>
+                    <div class="product-price">
+                        <h5>${{totalPrice}}</h5>
+                    </div>
+                </div>
+                 <hr>
+                {{/each}}
+               
+                <div class="mt-5 amount row">
+                    <div class="d-flex justify-content-center col-md-6"></div>
+                    <div class="col-md-6">
+                        <div class="billing">
+                            {{!-- <div class="d-flex justify-content-between"><span>Subtotal</span><span
+                                    class="font-weight-bold">$120</span></div> --}}
+                            <div class="d-flex justify-content-between mt-2"><span>Shipping fee</span><span
+                                    class="font-weight-bold">$0</span></div>
+                            <div class="d-flex justify-content-between mt-2"><span>Tax</span><span
+                                    class="font-weight-bold">$0</span></div>
+                            <div class="d-flex justify-content-between mt-2"><span
+                                    class="">Discount</span><span class="font-weight-bold">${{orderDatas.discount}}</span></div>
+                            <hr>
+                            <div class="d-flex justify-content-between mt-1"><span
+                                    class="font-weight-bold ">Total</span><span
+                                    class="font-weight-bold text-dark">${{orderDatas.finalAmount}}</span></div>
+                        </div>
+                    </div>
+
+                {{!-- <span class="d-block">Expected delivery date</span><span class="font-weight-bold text-success">12
+                    March 2020</span> --}}
+
+                </div><span class="d-block mt-3 text-black-50 fs-15">We will be sending a shipping
+                    confirmation email when the item is shipped!</span>
+                <hr>
+                <div class="d-flex justify-content-between align-items-center footer">
+                    <div class="thanks"><span class="d-block font-weight-bold">Thanks for shopping</span><span>Minishop
+                            team</span></div>
+                    <div class="d-flex flex-column justify-content-end align-items-end"><span
+                            class="d-block font-weight-bold">Need Help?</span><span>Call - 974493933</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class=" d-flex justify-content-center">
+    <a href="/shop"> <button class="btn border-dark"
+            style=" background-color: black; color: white; margin-right: 5px;">continue shoping</button></a>
+    <button onclick="printDiv('printMe')" class="btn border-dark"
+        style="padding: 0px 50px 0px 50px; background-color: black; color: white;">Print</button>
+
+</div>
+
+<script>
+    function printDiv(divName) {
+        var printContents = document.getElementById(divName).innerHTML;
+        var originalContents = document.body.innerHTML;
+
+        document.body.innerHTML = printContents;
+
+        window.print();
+
+        document.body.innerHTML = originalContents;
+
+    }
+</script>
+<footer class="ftco-footer ftco-section mt-5">
+    <div class="container">
+        <div class="row">
+            <div class="mouse">
+                <a href="#" class="mouse-icon">
+                    <div class="mouse-wheel"><span class="ion-ios-arrow-up"></span></div>
+                </a>
+            </div>
+        </div>
+        <div class="row mb-5">
+            <div class="col-md">
+                <div class="ftco-footer-widget mb-4">
+                    <h2 class="ftco-heading-2">Minishop</h2>
+                    <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia.</p>
+                    <ul class="ftco-footer-social list-unstyled float-md-left float-lft mt-5">
+                        <li class="ftco-animate"><a href="#"><span class="icon-twitter"></span></a></li>
+                        <li class="ftco-animate"><a href="#"><span class="icon-facebook"></span></a></li>
+                        <li class="ftco-animate"><a href="#"><span class="icon-instagram"></span></a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md">
+                <div class="ftco-footer-widget mb-4 ml-md-5">
+                    <h2 class="ftco-heading-2">Menu</h2>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="py-2 d-block">Shop</a></li>
+                        <li><a href="#" class="py-2 d-block">About</a></li>
+                        <li><a href="#" class="py-2 d-block">Journal</a></li>
+                        <li><a href="#" class="py-2 d-block">Contact Us</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="ftco-footer-widget mb-4">
+                    <h2 class="ftco-heading-2">Help</h2>
+                    <div class="d-flex">
+                        <ul class="list-unstyled mr-l-5 pr-l-3 mr-4">
+                            <li><a href="#" class="py-2 d-block">Shipping Information</a></li>
+                            <li><a href="#" class="py-2 d-block">Returns &amp; Exchange</a></li>
+                            <li><a href="#" class="py-2 d-block">Terms &amp; Conditions</a></li>
+                            <li><a href="#" class="py-2 d-block">Privacy Policy</a></li>
+                        </ul>
+                        <ul class="list-unstyled">
+                            <li><a href="#" class="py-2 d-block">FAQs</a></li>
+                            <li><a href="#" class="py-2 d-block">Contact</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md">
+                <div class="ftco-footer-widget mb-4">
+                    <h2 class="ftco-heading-2">Have a Questions?</h2>
+                    <div class="block-23 mb-3">
+                        <ul>
+                            <li><span class="icon icon-map-marker"></span><span class="text">203 Fake St. Mountain View,
+                                    San Francisco, California, USA</span></li>
+                            <li><a href="#"><span class="icon icon-phone"></span><span class="text">+2 392 3929
+                                        210</span></a></li>
+                            <li><a href="#"><span class="icon icon-envelope"></span><span
+                                        class="text">info@yourdomain.com</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 text-center">
+
+                <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                    Copyright &copy;
+                    <script>document.write(new Date().getFullYear());</script> All rights reserved | This template is
+                    made with <i class="icon-heart color-danger" aria-hidden="true"></i> by <a
+                        href="https://colorlib.com" target="_blank">Colorlib</a>
+                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
