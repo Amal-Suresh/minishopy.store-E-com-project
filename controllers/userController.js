@@ -45,17 +45,17 @@ const sendResetPasswordMail = ((fname, email, token) => {
         port: 465,
         secure: true,
         auth: {
-            user: config.emailUser,
-            pass: config.emailPassword
+            user:process.env.EMAIL_USER,
+            pass:process.env.EMAIL_PASSWORD
         }
     });
 
     const mailOptions = {
-        from: config.emailUser,
+        from:process.env.EMAIL_USER,
         to: email,
         subject: 'For reset password',
         // text: `Your OTP is ${otp}`
-        html: '<p>Hii' + fname + ',Please click here to <a href="http://127.0.0.1:3000/forget-password?token=' + token + '">Reset</a> your password.</p>'
+        html: '<p>Hii' + fname + ',Please click here to <a href="https://minishopy.store/forget-password?token=' + token + '">Reset</a> your password.</p>'
     };
 
     // send the email
