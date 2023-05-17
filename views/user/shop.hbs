@@ -12,7 +12,7 @@
 
 	<section class="ftco-section bg-light">
 		<div class="container">
-			 
+
 			<div class="row">
 				<div class="col-md-8 col-lg-10 order-md-last">
 					<div class="row">
@@ -20,7 +20,8 @@
 						<div class="col-sm-12 col-md-6 col-lg-3 ftco-animate d-flex">
 							<div class="product d-flex flex-column">
 								<a href="/singleproduct?id={{_id}}" class="img-prod"><img class="img-fluid"
-										src="http://res.cloudinary.com/dhelj3ru4/image/upload/v1684071806/{{image.[0]}}.jpg" alt="Colorlib Template"></a>
+										src="http://res.cloudinary.com/dhelj3ru4/image/upload/v1684071806/{{image.[0]}}.jpg"
+										alt="Colorlib Template"></a>
 								<div class="text py-3 pb-4 px-3">
 									<div class="d-flex">
 										<div class="cat">
@@ -42,13 +43,16 @@
 											<p class="price"><span>${{price}}</span></p>
 										</div>
 										<div>
-											<button onclick="addtocart('{{_id}}')" style="background-color: darkblue;color: white;padding: 2px 5px 2px 5px; border: none; border-radius: 10px;">Add to Cart</button>
+											<button onclick="addtocart('{{_id}}')"
+												style="background-color: darkblue;color: white;padding: 2px 5px 2px 5px; border: none; border-radius: 10px;">Add
+												to Cart</button>
 										</div>
 									</div>
 									<p class="bottom-area d-flex px-3">
-										<a  class="add-to-cart text-center py-2 mr-1"><span>Add to cart <i
+										<a class="add-to-cart text-center py-2 mr-1"><span>Add to cart <i
 													class="ion-ios-add ml-1"></i></span></a>
-										<a href="/addtowishlist?id={{_id}}" class="buy-now text-center py-2">wishlist<span><i
+										<a href="/addtowishlist?id={{_id}}"
+											class="buy-now text-center py-2">wishlist<span><i
 													class="ion-ios-cart ml-1"></i></span></a>
 									</p>
 								</div>
@@ -59,14 +63,14 @@
 
 
 					</div>
-					
+
 
 					<div class="row mt-5">
-						
 
-                            {{{pagination totalPages currentPage}}}
 
-                           
+						{{{pagination totalPages currentPage}}}
+
+
 						{{!-- <div class="col text-center">
 							<div class="block-27">
 								<ul>
@@ -90,14 +94,15 @@
 						<div class="sidebar mb-3">
 							<div class="input-group align-items-center d-flex flex-row">
 								<form action="/shop" method="GET">
-    								<input type="text" id="search-input" name="search" class="" placeholder="Search" style="width: 120px; margin-right: 3px;">
-     								<button type="submit"><i class=" bi bi-search"></i></button>	
+									<input type="text" id="search-input" name="search" value="{{search}}" class=""
+										placeholder="Search" style="width: 120px; margin-right: 3px;">
+									<button type="submit"><i class=" bi bi-search"></i></button>
 									<input type="hidden" name="sortValue" value="{{sortValue}}">
 									<input type="hidden" name="categoryId" value="{{categoryId}}">
 								</form>
 
 
-  							</div>
+							</div>
 						</div>
 						<div class="sidebar-box-2">
 							<h2 class="heading">Categories</h2>
@@ -105,16 +110,37 @@
 								<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 									<div class="panel panel-default">
 										<div class="panel-heading" role="tab" id="headingOne">
-											<a href="/shop"><h6>All</h6></a>
+											<a href="/shop">
+												<h6>All</h6>
+											</a>
+
 											{{#each category}}
 											<h4 class="panel-title">
-												<a href="?categoryId={{_id}}"><h6>{{name}}</h6></a>
+												<a href="?categoryId={{_id}}" class="category-link"
+													data-category-id="{{_id}}">
+													<h6>{{name}}</h6>
+												</a>
 											</h4>
 											{{/each}}
 
-										</div>	
+
+
+
+
+
+
+
+											{{!-- {{#each category}}
+											<h4 class="panel-title">
+												<a href="?categoryId={{_id}}&search={{search}}">
+													<h6>{{name}}</h6>
+												</a>
+											</h4>
+											{{/each}} --}}
+
+										</div>
 									</div>
-								
+
 								</div>
 							</div>
 						</div>
@@ -126,34 +152,64 @@
 										<div class="form-group">
 											<div class="form-field">
 												<i class="icon icon-arrow-down3"></i>
-											
-													<select name="sort" id="people" class="form-control">
-														<selected>
+
+												<select name="sort" id="people" class="form-control">
+													<selected>
 														<option value="">Sort Method</option>
 														<option value="1">low to high</option>
 														<option value="-1">high to low</option>
-													</select>
+												</select>
 
-													<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-													<script>
-														$(document).ready(function() {
-															$('#people').on('change', function() {
-																var sortVal = $(this).val();
-																var categoryId = '{{categoryId}}';
-																var url;
-																if (sortVal == '-1') {
-																	url = '?categoryId=' + categoryId + '&sort=-1';
-																} else if (sortVal == '1') {
-																	url = '?categoryId=' + categoryId + '&sort=1';
+												<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+												<script>
+													$(document).ready(function () {
+														var urlParams = new URLSearchParams(window.location.search);
+														var sortValue = urlParams.get('sort');
+														$('#people option[value="' + sortValue + '"]').prop('selected', true);
+													});
+
+												</script>
+
+												<script>
+													$(document).ready(function () {
+														var urlParams = new URLSearchParams(window.location.search);
+														var categoryId = urlParams.get('categoryId');
+
+														if (!categoryId) {
+															$('h6:contains("All")').css('color', 'blue');
+														} else {
+															$('.category-link').each(function () {
+																if ($(this).data('category-id') === categoryId) {
+																	$(this).css('color', 'blue');
 																}
-																window.location.href = url;
 															});
+														}
+													});
+
+
+												</script>
+
+
+												<script>
+													$(document).ready(function () {
+														$('#people').on('change', function () {
+															var sortVal = $(this).val();
+															var categoryId = '{{categoryId}}';
+															var url;
+															if (sortVal == '-1') {
+																url = '?categoryId=' + categoryId + '&sort=-1';
+															} else if (sortVal == '1') {
+																url = '?categoryId=' + categoryId + '&sort=1';
+															}
+															window.location.href = url;
 														});
-													</script>
+													});
+												</script>
 											</div>
 										</div>
 									</div>
-									
+
 								</div>
 							</form>
 						</div>
@@ -297,7 +353,7 @@
 
 					<p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
 						Copyright &copy;
-						<script>document.write(new Date().getFullYear());</script> All rights reserved 
+						<script>document.write(new Date().getFullYear());</script> All rights reserved
 						<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
 					</p>
 				</div>
@@ -319,29 +375,29 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 
 <script>
-  function addtocart(id) {
-	
-    $.ajax({
-      url: '/addtocart',
-      method: 'post',
-      data: { proId: id },
-      success: function(response) {
-        if (response.stock) {
-          swal("Oops!", "Product out of Stock", "error");
-        } else if (response.message) {
-          
-          swal("Success!", "Product Added to Cart", "success");
-        }
-      
-	  else if (response.qty) {
-          
-          swal("Oops!", "Product Already In Cart", "error");
-        }
-      },
-      error: function(xhr, status, error) {
-        console.error(xhr.responseText);
-        swal("Error!", "An error occurred.", "error");
-      }
-    });
-  }
+	function addtocart(id) {
+
+		$.ajax({
+			url: '/addtocart',
+			method: 'post',
+			data: { proId: id },
+			success: function (response) {
+				if (response.stock) {
+					swal("Oops!", "Product out of Stock", "error");
+				} else if (response.message) {
+
+					swal("Success!", "Product Added to Cart", "success");
+				}
+
+				else if (response.qty) {
+
+					swal("Oops!", "Product Already In Cart", "error");
+				}
+			},
+			error: function (xhr, status, error) {
+				console.error(xhr.responseText);
+				swal("Error!", "An error occurred.", "error");
+			}
+		});
+	}
 </script>

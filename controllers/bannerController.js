@@ -41,7 +41,12 @@ const loadUpdateBanner = async(req,res)=>{
 
 const addBanner = async(req,res)=>{
     try {
-        const img = req.file.filename
+        // let img = []
+        // for (const file of req.files) {
+        //     const result = await cloudinary.uploader.upload(file.path)
+        //     img.push(result.public_id)     
+        // }
+         const img = req.file.filename
         const banner = new Banner({
             title: req.body.title,
             subtitle: req.body.subtitle,

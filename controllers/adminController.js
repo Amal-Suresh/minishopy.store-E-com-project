@@ -41,7 +41,62 @@ const loadLogin = async (req, res) => {
 
 const loadHome = async (req, res) => {
     try {
-        res.render('home', { admin: true ,dash:true })
+
+        const countCod = { paymentMethod: "COD" };
+        const cCod = await Order.countDocuments(countCod)
+        const countOnline = { paymentMethod: "Online" };
+        const cOnline = await Order.countDocuments(countOnline)
+        const countWallet = { paymentMethod: "Wallet" };
+        const cWallet = await Order.countDocuments(countWallet)
+
+
+        const countDelivered = { orderStatus: "delivered" };
+        const cDelivered = await Order.countDocuments(countDelivered)
+
+        const countOrdered = { orderStatus: "ordered" };
+        const cOrdered = await Order.countDocuments(countOrdered)
+
+        const countReturned = { orderStatus: "returned" };
+        const cReturned = await Order.countDocuments(countReturned)
+
+        const countShipped = { orderStatus: "shipped" };
+        const cShipped = await Order.countDocuments(countShipped)
+
+        const countCancelled = { orderStatus: "cancelled" };
+        const cCancel = await Order.countDocuments(countCancelled)
+
+        // const clogs = await Order.find({orderStatus:"delivered"},'product').lean()
+        // const clogsProducts =clogs.flatMap(order=> order.product).flat()
+        // const clogsProductIds = clogsProducts.map(product=>product._id)
+
+        // console.log(clogsProductIds,"???????????????????????????????????????????");
+       
+        // const clogsCat = await Category.findOne({name:"clogs"}).lean()
+        
+        // const clogsCatId = clogsCat._id
+        
+        // const productsInClogsCat = await Product.find({category:clogsCatId,_id:{$in:clogsProductIds}}).lean()
+        
+        // const clogsCount =productsInClogsCat.length
+
+        // console.log(clogsCount,"./.././/.//././/..////.../././//.///./././...",productsInClogsCat,clogsCat);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        res.render('home', { admin: true, dash: true, cWallet, cOnline, cCod ,cOrdered,cReturned,cDelivered,cShipped,cCancel})
     } catch (error) {
         console.log(error.message);
     }
@@ -87,7 +142,35 @@ const verifyLogin = async (req, res) => {
                 req.session.adminId = adminData._id;
                 req.session.adminName = adminData.fname;
 
-                res.render('home', { admin: true , dash:true })
+                const countCod = { paymentMethod: "COD" };
+                const cCod = await Order.countDocuments(countCod)
+                const countOnline = { paymentMethod: "Online" };
+                const cOnline = await Order.countDocuments(countOnline)
+                const countWallet = { paymentMethod: "Wallet" };
+                const cWallet = await Order.countDocuments(countWallet)
+
+
+                const countDelivered = { orderStatus: "delivered" };
+                const cDelivered = await Order.countDocuments(countDelivered)
+
+                const countOrdered = { orderStatus: "ordered" };
+                const cOrdered = await Order.countDocuments(countOrdered)
+
+                const countReturned = { orderStatus: "returned" };
+                const cReturned = await Order.countDocuments(countReturned)
+
+                const countShipped = { orderStatus: "shipped" };
+                const cShipped = await Order.countDocuments(countShipped)
+
+                const countCancelled = { orderStatus: "cancelled" };
+                const cCancel = await Order.countDocuments(countCancelled)
+
+
+
+
+
+
+                res.render('home', { admin: true, dash: true, cWallet, cOnline, cCod, cDelivered, cOrdered, cReturned, cShipped, cCancel })
             } else {
                 res.render('login', { message: "incorrect email or password", login: true })
             }
@@ -104,7 +187,7 @@ const listUsers = async (req, res) => {
     try {
         const usersData = await User.find().lean()
         console.log(usersData);
-        res.render('userlist', { admin: true, users: usersData ,userlist:true})
+        res.render('userlist', { admin: true, users: usersData, userlist: true })
 
     } catch (error) {
         console.log(error.message);
@@ -238,17 +321,12 @@ const loadAddProduct = async (req, res) => {
 
 const addProducts = async (req, res) => {
     try {
-        
+
         let img = []
-        for(const file of req.files){
-         const result = await cloudinary.uploader.upload(file.path)
-           img.push(result.public_id)
-
-           console.log(result,'.......................................');
+        for (const file of req.files) {
+            const result = await cloudinary.uploader.upload(file.path)
+            img.push(result.public_id)     
         }
-        console.log(img,"[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[");
-
-        console.log(req.body);
         const product = new Product({
             name: req.body.name,
             bname: req.body.brand,
@@ -258,11 +336,11 @@ const addProducts = async (req, res) => {
             category: req.body.category
 
         })
-          
+
         const productData = await product.save();
-        console.log(productData,"drdtfflgukdfddsskrsrdddrjdk");
+        console.log(productData, "drdtfflgukdfddsskrsrdddrjdk");
         if (productData) {
-            
+
             res.redirect("/admin/products")
         } else {
             res.redirect("/admin/products")
@@ -413,9 +491,11 @@ const adminLogout = async (req, res) => {
 
 const salesReport = async (req, res) => {
     try {
+
+        console.log("sales reached");
         const from = req.query.from
         const to = req.query.to
-        
+
         let query = { orderStatus: "delivered" }
         if (from && to) {
             query.date = {
@@ -433,22 +513,27 @@ const salesReport = async (req, res) => {
         }
 
         const deliveredPro = await Order.find(query).populate('user').lean()
+        
         const adminname = req.session.adminName
-        const deliveredProducts = deliveredPro.map((order) => {
-            const Orderdate = new Date(order.date)
-            const date = Orderdate.toLocaleString()
-            const _id = order._id
-            const finalAmount = order.finalAmount
-            const paymentMethod = order.paymentMethod
-            const fname = order.user.fname
 
-            return { date, _id, finalAmount, paymentMethod, fname }
-        })
-        res.render('sales', { admin: true, adminname, deliveredProducts, to, from })
+        const deliveredProducts = deliveredPro.map((order) => {
+            const orderDate = new Date(order.date);
+            const formattedDate = orderDate.toLocaleString();
+            const orderId = order._id;
+            const finalAmount = order.finalAmount;
+            const paymentMethod = order.paymentMethod;
+            const firstName = order.user ? order.user.fname : '';
+          
+            return { date: formattedDate, _id: orderId, finalAmount, paymentMethod, fname: firstName };
+          });
+          
+        res.render('sales', { admin: true, adminname,deliveredProducts, to, from })
     } catch (error) {
 
     }
 }
+
+
 
 
 
@@ -482,7 +567,7 @@ module.exports = {
     viewOrder,
     adminLogout,
     salesReport,
-    
+
 
 
 

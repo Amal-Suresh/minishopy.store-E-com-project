@@ -5,6 +5,7 @@ const Coupon = require("../models/couponModel")
 require("dotenv").config()
 const Razorpay = require("razorpay")
 const { query } = require("express")
+const Product = require('../models/productModel')
 
 var instance = new Razorpay({ key_id: process.env.RAZOR_KEYID, key_secret:process.env.RAZOR_SECRET })
 
@@ -74,10 +75,13 @@ const placeOrder = async (req, res) => {
             }
 
             req.session.userOrder = order._id
+            Promise.all(userCart.product.map(({productId,quantity}) => {
+                return Product.findOneAndUpdate({_id:productId},{$inc:{quantity:-quantity}})
+              }))
+              
 
             const OrderData = await Order.find({_id:order._id}).lean("product").lean()
 
-            console.log(OrderData,"mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL");
 
             username = req.session.userDatas.fname
             if (saveOrder) {
@@ -131,6 +135,11 @@ const placeOrder = async (req, res) => {
            })
 
            const saveOrder = await order.save()
+
+           Promise.all(userCart.product.map(({productId,quantity}) => {
+            return Product.findOneAndUpdate({_id:productId},{$inc:{quantity:-quantity}})
+          }))
+          
 
            const subtotal =  req.session.totalAmount
            const newWallet = userData.wallet - req.session.totalAmount
@@ -202,6 +211,11 @@ const success = async (req, res) => {
                     date: new Date()
                 })
                 const saveOrder = await order.save()
+
+                Promise.all(userCart.product.map(({productId,quantity}) => {
+                    return Product.findOneAndUpdate({_id:productId},{$inc:{quantity:-quantity}})
+                  }))
+                  
                 if(req.session.coupon){
                     const insertUser = await Coupon.findByIdAndUpdate(req.session.couponId,
                         {
@@ -233,8 +247,13 @@ const success = async (req, res) => {
 const userCancelOrder = async(req,res)=>{
     try {
         const orderId = req.query.id
-        const OrderData = await Order.findById(orderId).lean()
-        if(OrderData.paymentMethod=="Online"){
+        const OrderData =  await Order.findOne({_id:orderId}).populate("product.productId").lean()
+        Promise.all(OrderData.product.map(({productId,quantity}) => {
+            return Product.findOneAndUpdate({_id:productId},{$inc:{quantity:quantity}})
+         }))
+
+        // const OrderData = await Order.findById(orderId).lean()
+        if(OrderData.paymentMethod=="Online"||OrderData.paymentMethod=="Online"){
             await User.findOneAndUpdate(OrderData.user,{$inc:{wallet:OrderData.finalAmount}})
         await Order.findOneAndUpdate({_id:orderId},{$set:{orderStatus:"cancelled"}}) 
         await User.findOneAndUpdate({_id:OrderData.user},{
@@ -258,7 +277,7 @@ const userCancelOrder = async(req,res)=>{
 const acceptReturn = async (req, res) => {
     try {
         const orderId = req.query.id
-        const orderData =  await Order.findOne({_id:orderId}).lean()
+        const orderData =  await Order.findOne({_id:orderId}).populate("product.productId").lean()
         const userid = orderData.user.toString()
         await User.findOneAndUpdate({_id:userid}, { $inc: { wallet: orderData.finalAmount } })
         await User.findOneAndUpdate({ _id: userid}, {
@@ -268,6 +287,12 @@ const acceptReturn = async (req, res) => {
                 sign: "credit" }
             }
         })
+
+          
+        Promise.all(orderData.product.map(({productId,quantity}) => {
+            return Product.findOneAndUpdate({_id:productId},{$inc:{quantity:quantity}})
+         }))
+
         const changeStat = await Order.findByIdAndUpdate({ _id: orderId }, {
             $set: { orderStatus: "returned" }
         })
@@ -280,7 +305,7 @@ const acceptReturn = async (req, res) => {
 
 const changeToDelivered = async (req, res) => {
     try {
-        const orderId = req.query.id
+        const orderId = req.query.id        
         const changeStat = await Order.findByIdAndUpdate({ _id: orderId }, {
             $set: { orderStatus: "delivered" }
         })
@@ -305,6 +330,12 @@ const changeToOrdered = async (req, res) => {
 const changeToCancelled = async (req, res) => {
     try {
         const orderId = req.query.id
+        const orderData =  await Order.findOne({_id:orderId}).populate("product.productId").lean()
+        Promise.all(orderData.product.map(({productId,quantity}) => {
+            return Product.findOneAndUpdate({_id:productId},{$inc:{quantity:quantity}})
+         }))
+
+       
         const changeStat = await Order.findByIdAndUpdate({ _id: orderId }, {
             $set: { orderStatus: "cancelled" }
         })

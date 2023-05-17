@@ -646,7 +646,7 @@ const userShop = async (req, res) => {
     currentPage=page
     nextPage=currentPage+1
     previousPage=currentPage-1 
-      res.render("shop", { user: true,totalPages,currentPage,nextPage,previousPage,categoryId,sortValue,username,products,category});
+      res.render("shop", { user: true,totalPages,currentPage,nextPage,previousPage,categoryId,sortValue,username,products,search,category});
     } catch (err) {
       console.log(err.message);
     }

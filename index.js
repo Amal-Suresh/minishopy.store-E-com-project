@@ -1,6 +1,7 @@
 
 const mongoose = require("mongoose")
-mongoose.connect("mongodb+srv://AMALSURESH:byzWFfwoaDkY8ba8@cluster0.fkhwtuh.mongodb.net/minishopEcom").then(() => {
+require('dotenv').config()
+mongoose.connect(process.env.MONGODB_IDPASS).then(() => {
   console.log("db c");
 })
 const express = require('express')
