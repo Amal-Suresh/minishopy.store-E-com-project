@@ -61,7 +61,7 @@ userRouter.get('/userprofile',auth.isLogin,userController.userProfile)
 userRouter.get('/deleteproduct',auth.isLogin,wishListController.deteteWishListProduct)
 
 
-userRouter.patch('/deleteCartproduct',cartContoller.deteteCartProduct)
+userRouter.patch('/deleteCartproduct',auth.isLogin,cartContoller.deteteCartProduct)
 
 
 userRouter.patch("/increment",auth.isLogin,cartContoller.increment);
@@ -91,16 +91,13 @@ userRouter.get('/orderDetails/:id',auth.isLogin,userController.orderData)
 userRouter.get('/userCoupons',auth.isLogin,couponContoller.userCouponRender)
 
 userRouter.post('/applycoupon',couponContoller.applycoupon)
-userRouter.get('/editaddress')
-userRouter.get('/selectaddress',userController.selectUserAddress)
-userRouter.get('/deleteaddress',userController.deleteAddress)
+userRouter.get('/selectaddress',auth.isLogin,userController.selectUserAddress)
+userRouter.get('/deleteaddress',auth.isLogin,userController.deleteAddress)
 userRouter.post('/updateaddress',userController.updateAddress)
 userRouter.get('/editaddress',userController.loadEditAddress)
 
-userRouter.get('/returnorder',userController.returnRequest)
-userRouter.get('/removecoupon',couponContoller.removeCoupon)
-
-
+userRouter.get('/returnorder',auth.isLogin,userController.returnRequest)
+userRouter.get('/removecoupon',auth.isLogin,couponContoller.removeCoupon)
 
 userRouter.get("/shop",userController.userShop)
 userRouter.get('/cancelorder',auth.isLogin,orderController.userCancelOrder)

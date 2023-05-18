@@ -1,4 +1,3 @@
-
 const mongoose = require("mongoose")
 require('dotenv').config()
 mongoose.connect(process.env.MONGODB_IDPASS).then(() => {
@@ -8,13 +7,11 @@ const express = require('express')
 const app = express()
 var path = require('path');
 const hbs = require('express-handlebars')
-
 const session = require('express-session')
 const bodyParser = require("body-parser")
 const cookieParser = require("cookie-parser") 
 const Handlebars = require('handlebars')
 const helpers = require('./middleware/helpers')
-
 
 Handlebars.registerHelper('eq', function (arg1, arg2) {
   return arg1 == arg2
@@ -29,7 +26,6 @@ app.use((req, res, next) => {
 //------------- to connect public folder
 app.use(express.static(path.join(__dirname + '/public')));
 app.use('/admin', express.static(path.join(__dirname + '/public')));
-
 
 // bodyparser
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -50,16 +46,11 @@ app.engine('hbs', hbs.engine({
 
 }))
 
-
-//--------------- for user routes
 const userRouter = require('./routes/userRouter')
 app.use('/', userRouter)
 
-//-------------- for admin routes
 const adminRouter = require('./routes/adminRouter')
 app.use('/admin', adminRouter)
-
-
 
 app.listen(3000, () => {
   console.log("server running");

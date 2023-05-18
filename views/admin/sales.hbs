@@ -1,9 +1,9 @@
 <div class="col-12">
-    <div class="bg-light rounded h-100 mt-5 p-4">
-        <h6 class="mb-4">Sales Report</h6>
-        <div class="row w-100">
-            <div class="col-12 col-md-6">
-                <form action="/admin/sales" class="d-flex" method="">
+  <div class="bg-light rounded h-100 mt-5 p-4">
+    <h6 class="mb-4">Sales Report</h6>
+    <div class="row w-100">
+      <div class="col-12 col-md-6">
+        {{!-- <form action="/admin/sales" class="d-flex" method="">
                     <div class="p-2">
                         
                         <input class="form-control" type="date" value="{{from}}" name="from">
@@ -17,55 +17,113 @@
                         
                         <a href=""><button class="btn btn-primary" type="submit">Filter</button></a>
                     </div>
-                </form>
-            </div>
+                </form> --}}
 
-            <div class="p-2 col-12 col-md-6 d-flex justify-content-end">
-                <a class="me-3" href=""><button onclick="printDiv('sales-table')" class="btn btn-danger ">Download PDF</button></a>
-                <a href="/admin/downloadexcel/?from={{from}}&to={{to}}"><button class="btn btn-success">Download
-                        Excel</button></a>
-            </div>
+        <form
+          action="/admin/sales"
+          class="d-flex"
+          onsubmit="return validateForm()"
+          method="GET"
+        >
+          <div class="p-2">
+            <input
+              class="form-control"
+              type="date"
+              value="{{from}}"
+              name="from"
+              id="startDate"
+            />
+          </div>
+          <div class="p-2">
+            <input
+              class="form-control"
+              type="date"
+              value="{{to}}"
+              name="to"
+              id="endDate"
+            />
+          </div>
+          <div class="p-2">
+            <button class="btn btn-primary" type="submit">Filter</button>
+          </div>
+        </form>
+         
+        <div class="row">
+             <p id="error" style="color: red; display: none; font-weight: 100;"></p>
         </div>
-        <div id="sales-table" class="table-responsive">
-            <table class="table  table-hover">
-                <thead>
-                    <tr>
-                        <th scope="col">User</th>
-                        <th scope="col">OrderID</th>
-                        <th scope="col">Date</th>
-                        <th scope="col">Payment</th>
-                        <th scope="col">Amount</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each deliveredProducts}}
-                    <tr>
-                        <td>{{fname}}</td>
-                        <td>{{_id}}</td>
-                        <td>{{date}}</td>
-                        <td>{{paymentMethod}}</td>
-                        <td>{{finalAmount}}</td>
-                    </tr>
-                    {{/each}}
-                </tbody>
-            </table>
-        </div>
+      </div>
+
+      <div class="p-2 col-12 col-md-6 d-flex justify-content-end">
+        <a class="me-3" href=""><button
+            onclick="printDiv('sales-table')"
+            class="btn btn-danger"
+          >Download PDF</button></a>
+        <a href="/admin/downloadexcel/?from={{from}}&to={{to}}"><button
+            class="btn btn-success"
+          >Download Excel</button></a>
+      </div>
     </div>
+    <div id="sales-table" class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col">User</th>
+            <th scope="col">OrderID</th>
+            <th scope="col">Date</th>
+            <th scope="col">Payment</th>
+            <th scope="col">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each deliveredProducts}}
+            <tr>
+              <td>{{fname}}</td>
+              <td>{{_id}}</td>
+              <td>{{date}}</td>
+              <td>{{paymentMethod}}</td>
+              <td>{{finalAmount}}</td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 <script>
-    function printDiv(divName) {
-        var printContents = document.getElementById(divName).innerHTML;
-        var originalContents = document.body.innerHTML;
+    function validateForm() {
+        var startDate = new Date(document.getElementById("startDate").value);
+        var endDate = new Date(document.getElementById("endDate").value);
+        var currentDate = new Date();
 
-        document.body.innerHTML = printContents;
+        if (startDate > currentDate || endDate > currentDate) {
+            displayErrorMessage("Invalid input can't select future dates.");
+            return false;
+        }
 
-        window.print();
+        if (startDate > endDate) {
+            displayErrorMessage("Start date should be before the end date.");
+            return false;
+        }
 
-        document.body.innerHTML = originalContents;
+        return true;
+    }
 
+    function displayErrorMessage(message) {
+        var errorElement = document.getElementById("error");
+        errorElement.innerText = message;
+        errorElement.style.display = "block";
+
+        setTimeout(function () {
+            errorElement.style.display = "none";
+        }, 3000); // Display the error message for 3 seconds (adjust the duration as needed)
     }
 </script>
-  <script>
-        var mylink=document.getElementById("sales")
-        mylink.classList.add("active")
-      </script>
+<script>
+  function printDiv(divName) { var printContents =
+  document.getElementById(divName).innerHTML; var originalContents =
+  document.body.innerHTML; document.body.innerHTML = printContents;
+  window.print(); document.body.innerHTML = originalContents; }
+</script>
+<script>
+  var mylink=document.getElementById("sales") mylink.classList.add("active")
+        </script>

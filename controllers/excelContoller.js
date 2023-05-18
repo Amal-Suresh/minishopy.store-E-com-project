@@ -6,7 +6,6 @@ const downloadExcel = async (req, res) => {
 
         const from = req.query.from
         const to = req.query.to
-
         let query = { orderStatus: "delivered" }
         if (from && to) {
             query.date = {
@@ -23,8 +22,6 @@ const downloadExcel = async (req, res) => {
             };
         }
 
-
-
         const workbook = new excelJs.Workbook();
         const worksheet = workbook.addWorksheet("Sales Report")
 
@@ -33,11 +30,8 @@ const downloadExcel = async (req, res) => {
             { header: "Date", key: "date" },
             { header: "Payment Method", key: "paymentMethod" },
             { header: "Total Amount", key: "finalAmount" },
-
-
         ]
         const deliveredProducts = await Order.find(query).populate('user').lean()
-
         deliveredProducts.forEach((things) => {
             worksheet.addRow(things)
         })
@@ -51,9 +45,7 @@ const downloadExcel = async (req, res) => {
             "Content-Type",
             "application/vnd.openxmlformats-officedocument.spreadsheatml.sheet"
         )
-
         res.setHeader("Content-Disposition", `attachment; filename=users.xlsx`)
-
         return workbook.xlsx.write(res).then(() => {
             res.status(200);
         })

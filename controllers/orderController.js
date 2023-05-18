@@ -334,8 +334,6 @@ const changeToCancelled = async (req, res) => {
         Promise.all(orderData.product.map(({productId,quantity}) => {
             return Product.findOneAndUpdate({_id:productId},{$inc:{quantity:quantity}})
          }))
-
-       
         const changeStat = await Order.findByIdAndUpdate({ _id: orderId }, {
             $set: { orderStatus: "cancelled" }
         })
@@ -345,8 +343,6 @@ const changeToCancelled = async (req, res) => {
     }
 }
 
-
-
 const changedToShipped = async (req, res) => {
     try {
         const orderId = req.query.id
@@ -354,14 +350,10 @@ const changedToShipped = async (req, res) => {
             $set: { orderStatus: "shipped" }
         })
         res.redirect('/admin/orders')
-
     } catch (error) {
 
     }
 }
-
-
-
 
 module.exports = {
     placeOrder,

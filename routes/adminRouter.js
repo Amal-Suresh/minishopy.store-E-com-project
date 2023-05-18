@@ -51,7 +51,6 @@ adminRoute.get('/deactivate',auth.isAdminlogin,couponController.deActivateCoupon
 adminRoute.get('/activate',auth.isAdminlogin,couponController.activateCoupon )
 adminRoute.get('/deletecoupon',auth.isAdminlogin,couponController.deleteCoupon)
 
-
 adminRoute.get('/changetodelivered',auth.isAdminlogin,orderController.changeToDelivered)
 adminRoute.get('/changetoordered',auth.isAdminlogin,orderController.changeToOrdered)
 adminRoute.get('/changecancelled',auth.isAdminlogin,orderController.changeToCancelled)

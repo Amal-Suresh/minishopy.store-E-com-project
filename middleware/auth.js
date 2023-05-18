@@ -1,19 +1,15 @@
 const User = require('../models/userModel')
 
-
 const isLogin = async(req,res,next)=>{
     try {
         if(req.session.userId){} 
         else{
             res.redirect('/login')
         }
-        next()
-           
+        next()     
     } catch (error) {
-        console.log(error.message);
-        
+        console.log(error.message);   
     }
-
 }
 
 const islogOut = async(req,res,next)=>{
@@ -23,11 +19,9 @@ const islogOut = async(req,res,next)=>{
         }
         else{
            next()
-        }
-        
+        }  
     } catch (error) {
-        console.log(error.message);
-        
+        console.log(error.message);  
     }
 }
 
@@ -50,8 +44,6 @@ const ifUserLogged = async(req,res,next)=>{
     }
 }
 
-
-
 const isAdminlogin=async(req,res,next)=>{
     try {
         if( req.session.adminId ){ }
@@ -64,8 +56,6 @@ const isAdminlogin=async(req,res,next)=>{
        console.log(error.message); 
     }}
 
-
-
 const isAdminlogout=async(req,res,next)=>{
     try {
         if( req.session.adminId ){
@@ -75,10 +65,7 @@ const isAdminlogout=async(req,res,next)=>{
     } catch (error) {
        console.log(error.message); 
     }}
-
-
-
-
+    
 module.exports ={
     isLogin,
     islogOut,

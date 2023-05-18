@@ -1,11 +1,8 @@
 const Banner = require('../models/bannerModel')
 
-
-
 const loadBanner = async(req,res)=>{
     try {
         const adminname = req.session.adminName
-
         const bannerData = await Banner.find().lean()
      res.render('banner',{admin:true,adminname,bannerData})   
     } catch (error) {
@@ -16,8 +13,7 @@ const loadBanner = async(req,res)=>{
 const loadAddBanner = async(req,res)=>{
     try {
         const adminname = req.session.adminName
-        res.render('addbanner',{admin:true,adminname})
-        
+        res.render('addbanner',{admin:true,adminname})   
     } catch (error) {
         console.log(error.message);
     }
@@ -28,9 +24,7 @@ const loadUpdateBanner = async(req,res)=>{
         const adminname = req.session.adminName
         const bannerId = req.query.id
         const bannerDetails = await Banner.findById(bannerId)
-        
-        res.render('updatebanner',{login:true,bannerDetails})
-        
+        res.render('updatebanner',{login:true,bannerDetails}) 
     } catch (error) {
         console.log(error.message);
     }
@@ -79,9 +73,6 @@ const deleteBannerImg = async(req,res)=>{
 
 const updateBanner = async(req,res)=>{
     try {
-            
-                console.log(req.body);
-          
                 const existingImg = await Banner.findById(req.body._id)
                 let img
                 if(existingImg.image){
@@ -89,8 +80,6 @@ const updateBanner = async(req,res)=>{
                 }else{
                     img=req.file.filename  
                 }
-                
-           
             await Banner.updateOne({ _id: req.body._id }, {
                 $set: {
                     title: req.body.title,
@@ -100,9 +89,7 @@ const updateBanner = async(req,res)=>{
                     image: img,
                 }
             })
-    
             res.redirect('/admin/banner')
-        
     } catch (error) {
         console.log(error.message);
     }
@@ -112,7 +99,6 @@ const deleteBanner = async(req,res)=>{
     try {
         await Banner.findByIdAndDelete(req.query.id)
         res.redirect('/admin/banner')
-
     } catch (error) {
         console.log(error.message);
     }
@@ -123,12 +109,12 @@ const deleteBanner = async(req,res)=>{
 const listBanner = async(req,res)=>{
     try {
        await Banner.findByIdAndUpdate(req.query.id,{$set:{status:false}}) 
-       res.redirect('/admin/banner')
-       
+       res.redirect('/admin/banner')  
     } catch (error) {
         console.log(error.message);
     }
 }
+
 const unlistBanner = async(req,res)=>{
     try {
         await Banner.findByIdAndUpdate(req.query.id,{$set:{status:true}}) 
@@ -137,9 +123,6 @@ const unlistBanner = async(req,res)=>{
         console.log(error.message);
     }
 }
-
-
-
 
 module.exports ={
     addBanner,

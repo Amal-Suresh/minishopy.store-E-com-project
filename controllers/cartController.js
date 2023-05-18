@@ -2,7 +2,6 @@ const Cart = require('../models/cartModel')
 const Product = require('../models/productModel')
 const User = require('../models/userModel')
 
-// cart controller add to cart
 const cart = async (req, res) => {
     try {
         
@@ -13,40 +12,14 @@ const cart = async (req, res) => {
         const userData = await User.findById(userDataSession._id);
         const productData = await Product.findById(productId);
         const userCart = await Cart.findOne({ user: userId });
-
         if(productData.quantity!=0){
-
-        //if user cart available
         if (userCart) {
             const productExistIndex = userCart.product.findIndex(
                 (product) => product.productId == productId
             );
 
-
             if (productExistIndex >= 0) {
-                //  await Cart.findOneAndUpdate(
-                //      { user: userId, "product.productId": productId },
-                //      { $inc: { "product.$.quantity": 1 } }
-
-                //  ).then((value) => {
-                //     res.json({ qty:true});
-                // });
-
-                // const findcart = await Cart.findOne({ user: userId, 'product.productId': productId })
-                // const find = findcart.product.find((value) => {
-                //     return value.productId == productId
-                // })
-
-
-                // await Cart.findOneAndUpdate(
-                //     { user: userId, "product.productId": productId },
-                //     { $set: { "product.$.totalPrice": find.quantity * find.price } }
-
-                // ).then((value) => {
-                //     console.log(value);
-                // })
                 res.json({ qty:true});
-
             } else {
                 await Cart.findOneAndUpdate(
                     { user: userId },
@@ -57,9 +30,6 @@ const cart = async (req, res) => {
                     }
                 );
                 res.json({message:true})
-                // res.redirect('/shop')
-                
-
             }
         } else {
             const data = new Cart({
@@ -73,14 +43,8 @@ const cart = async (req, res) => {
                     },
                 ],
             });
-
             await data.save();
-
-
-//res.json({})
-            res.json({message:true})
-            //  res.redirect('/shop')
-            
+            res.json({message:true})   
         }
     }else{
         res.json({stock:"out of stock"})
@@ -93,28 +57,22 @@ const cart = async (req, res) => {
 
 const cartPage = async (req, res) => {
     try {
-
         const findCart = await Cart.findOne({ user: req.session.userId }).populate('product.productId').lean();
-
-
         if (req.session.userDatas) {
             username = req.session.userDatas.fname
-
-
         }
         if(findCart==null){
             res.render('emptycart',{user:true,username})
         }
-
         const subPrice = findCart.product.reduce((acc, curr) => acc += curr.totalPrice, 0);
         const discount = 0
         const deliveryCharge = 0
         const grandTotal = subPrice + discount + deliveryCharge;
         req.session.totalAmount = grandTotal
-
-        
-        res.render('cart', { user: true, findCart, subPrice, grandTotal, username });
-
+        const cartdata = await Cart.find({ user: req.session?.userDatas?._id });
+        const productArray = cartdata.map(cart => cart.product); 
+        const cartCount = productArray.reduce((count, product) => count + product.length, 0); 
+        res.render('cart', { user: true, findCart, subPrice, grandTotal, username,cartCount });
     } catch (error) {
         console.log(error.message);
     }
@@ -124,20 +82,15 @@ const deteteCartProduct = async (req, res) => {
     try {
 
         const productId = req.body.id;
-        console.log(req.body, '---------body id-------');
         const userId = req.session.userDatas._id
         const username = req.session.userDatas.fname
         const deletepro = await Cart.findOneAndUpdate(
             { user: userId },
             { $pull: { product: { productId: productId } } }
         ).then((value) => {
-            console.log(value, '---------result------');
         })
         const findCart = await Cart.findOne({ user: req.session.userId }).populate('product.productId').lean();
         res.json({ findCart, user: true, username })
-
-
-
     } catch (error) {
         console.log(error.message);
     }
@@ -163,7 +116,6 @@ const increment = async (req, res) => {
                 })
                 const price1 = s.price
                 const price2 = value1.quantity
-                // const price = price1 * price2
                 const totalPrice = price1 * price2
                 await Cart.updateOne({ user: userid, 'product.productId': productId }, { $inc: { "product.$.totalPrice": price1 } }).then(async (value) => {
                     const cartList = await Promise.all(que.product.map(({
@@ -187,7 +139,6 @@ const increment = async (req, res) => {
         } else {
 
             const qu = await Cart.findOne({ user: userid })
-
             const value1 = qu.product.find((values) => {
                 return values.productId == productId
             })
@@ -226,8 +177,6 @@ const decrement = async (req, res, next) => {
             const value1 = qu.product.find((value) => {
                 return value.productId == productId
             })
-            console.log('---data--');
-            console.log('---data--', value1.quantity);
 
             const price2 = value1.quantity
             const price = price1 * price2
@@ -252,10 +201,8 @@ const decrement = async (req, res, next) => {
                             quantity,
                             productId
                         })))
-
                     grandTotal = await Amount(cartList)
                     req.session.totalAmount =grandTotal
-
                     return res.json({ value1, message: ' Item removed ', grandTotal, uprice })
                 })
             })
@@ -277,8 +224,6 @@ function Amount(cartList) {
     }, 0);
     return total;
 }
-
-
 
 module.exports = {
     cart,

@@ -4,7 +4,6 @@ const User = require('../models/userModel')
 
 const loadCoupons =async(req,res)=>{
     try {
-
         const coup = await Coupon.find().lean()
         const coupons = coup.map((coupon)=>{
           const date = new Date(coupon.expireDate)
@@ -19,8 +18,6 @@ const loadCoupons =async(req,res)=>{
           const minPurchase = coupon.minPurchase 
           return{expireDate:mainDate,_id,couponName,maxDiscount,limit,status,couponCode,discountValue,minPurchase}
         })
-
-
         res.render('coupons',{admin:true,coupons})
     } catch (error) {
         console.log(error.message);
@@ -34,7 +31,6 @@ const loadAddCoupons =async(req,res)=>{
         
     }
 }
-
 
 const addCoupons = async(req,res)=>{
     try {
@@ -50,13 +46,10 @@ const addCoupons = async(req,res)=>{
         }) 
 
         const addCoup = await coupon.save();
-
         if(addCoup){
             console.log("coupon created successfully");
             res.redirect('/admin/coupons')
         }
-
-
     } catch (error) {
         console.log(error.message);
     }
@@ -64,7 +57,6 @@ const addCoupons = async(req,res)=>{
 
 const deActivateCoupon = async(req,res)=>{
     try {
-    
         await Coupon.findByIdAndUpdate({ _id: req.query.id }, { $set: { status: false } })
         res.redirect('/admin/coupons')
     } catch (error) {
@@ -74,7 +66,6 @@ const deActivateCoupon = async(req,res)=>{
 
 const activateCoupon = async(req,res)=>{
     try {
-      
         await Coupon.findByIdAndUpdate({ _id: req.query.id }, { $set: { status: true } })
         res.redirect('/admin/coupons')
     } catch (error) {
@@ -84,27 +75,24 @@ const activateCoupon = async(req,res)=>{
 
 const userCouponRender = async (req,res)=>{
     try {
-        username = req.session.userDatas.fname    
-        const coup = await Coupon.find().lean()
-
-    const coupons = coup.map((coupon)=>{
-    const date = new Date(coupon.expireDate)
-    const mainDate = date.toLocaleString()
-    const id = coupon._id
-    const couponName = coupon.couponName
-    const couponCode =coupon.couponCode
-    const discountValue = coupon.discountValue
-    const minPurchase = coupon.minPurchase 
-    return{expireDate:mainDate,id,couponName,couponCode,discountValue,minPurchase}
-})
-
+            username = req.session.userDatas.fname    
+            const coup = await Coupon.find().lean()
+            const coupons = coup.map((coupon)=>{
+                const date = new Date(coupon.expireDate)
+                const mainDate = date.toLocaleString()
+                const id = coupon._id
+                const couponName = coupon.couponName
+                const couponCode =coupon.couponCode
+                const discountValue = coupon.discountValue
+                const minPurchase = coupon.minPurchase 
+                return{expireDate:mainDate,id,couponName,couponCode,discountValue,minPurchase}
+            })
         res.render('coupon',{user:true,coupons,username}) 
     } catch (error) {
         console.log(error.message);
         
     }
 }
-
 
 const applycoupon = async (req, res) => {
     try {
@@ -126,7 +114,6 @@ const applycoupon = async (req, res) => {
              
               if (couponData.minPurchase <= amount) {
                 let discountvalue1 = couponData.discountValue;
-                // let distotal = Math.round(amount - discountvalue1);
                 var discountAmount =Math.floor((discountvalue1/100)*amount)
                 if (discountAmount>couponData.maxDiscount){
                     discountAmount=couponData.maxDiscount
@@ -138,10 +125,6 @@ const applycoupon = async (req, res) => {
                 req.session.discount = discount
 
                 req.session.coupon = code
-
-                console.log(req.session.coupon,"applyed coupon code");
-                
-                //const insertUser = await Coupon.findByIdAndUpdate(couponId,{$push:{whoUsed:userId}})
 
                 res.json({
                   couponokey: true,
@@ -173,8 +156,7 @@ const deleteCoupon = async(req,res)=>{
     try {
     const couponId = req.query.id
     await Coupon.findByIdAndDelete(couponId)
-    res.redirect('/admin/coupons')
-      
+    res.redirect('/admin/coupons')  
     } catch (error) {
       console.log(error.message);  
     }
@@ -182,11 +164,9 @@ const deleteCoupon = async(req,res)=>{
 
 const removeCoupon = async(req,res)=>{
   try {
-
     req.session.coupon = null
     req.session.couponId = null
     req.session.discount = null
-
     res.redirect('/checkout')
   } catch (error) {
     console.log(error.message);
