@@ -48,6 +48,9 @@
 												to Cart</button>
 										</div>
 									</div>
+									{{#if (eq quantity 0)}}
+										<p class="text-start" style="color: rgb(255, 3, 3);font-weight: bold;">out of stock</p>
+									{{/if}}
 									<p class="bottom-area d-flex px-3">
 										{{!-- <a class="add-to-cart text-center py-2 mr-1"><span>Add to cart <i
 													class="ion-ios-add ml-1"></i></span></a> --}}
@@ -60,17 +63,9 @@
 
 						</div>
 						{{/each}}
-
-
 					</div>
-
-
 					<div class="row mt-5">
-
-
 						{{{pagination totalPages currentPage}}}
-
-
 						{{!-- <div class="col text-center">
 							<div class="block-27">
 								<ul>
@@ -85,8 +80,6 @@
 							</div>
 						</div> --}}
 					</div>
-
-
 				</div>
 
 				<div class="col-md-4 col-lg-2">
