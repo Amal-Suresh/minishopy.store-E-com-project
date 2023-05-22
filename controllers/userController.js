@@ -9,6 +9,11 @@ const Order = require('../models/orderModel')
 const Banner = require('../models/bannerModel')
 const cart = require('../models/cartModel')
 require("dotenv").config()
+const Razorpay = require("razorpay")
+
+var instance = new Razorpay({ key_id: process.env.RAZOR_KEYID, key_secret:process.env.RAZOR_SECRET })
+
+
 
 const sMail = ((email, otp) => {
     const transporter = nodemailer.createTransport({
@@ -62,9 +67,11 @@ const sendResetPasswordMail = ((fname, email, token) => {
     transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
             console.log(error);
-        } else {
-            console.log('Email sent: ' + info.response);
-        }
+         } 
+        //else { 
+        //     // console.log('Email sent: ' + info.response);
+           
+        // }
     })
 })
 
@@ -73,7 +80,7 @@ const securePassword = async (password) => {
         const passwordHash = await bcrypt.hash(password, 10);
         return passwordHash;
     } catch (error) {
-        console.log(error.message);
+      
     }
 }
 
@@ -81,7 +88,7 @@ const loadRegister = async (req, res) => {
     try {
         res.render('register', { login: true })
     } catch (error) {
-        console.log(error.message);
+       
     }
 }
 
@@ -89,7 +96,7 @@ const loadLogin = async (req, res) => {
     try {
         res.render('login', { login: true })
     } catch (error) {
-        console.log(error.message);
+       
     }
 }
 
@@ -111,9 +118,8 @@ const home = async (req, res) => {
 
         }
 
-
     } catch (error) {
-        console.log(error.message);
+     
 
     }
 
@@ -127,7 +133,7 @@ const loadAbout = async (req, res) => {
         const cartCount = productArray.reduce((count, product) => count + product.length, 0);
         res.render('about', { user: true, username, cartCount })
     } catch (error) {
-        console.log(error.message);
+        res.render('404',{login:true})
     }
 }
 
@@ -140,7 +146,7 @@ const loadContact = async (req, res) => {
         username = req.session.userDatas.fname
         res.render('contact', { user: true, username, cartCount })
     } catch (error) {
-        console.log(error.message);
+        res.render('404',{login:true})
     }
 }
 
@@ -148,7 +154,7 @@ const loadOtp = async (req, res) => {
     try {
         res.render('otp', { otp: true, email: userdata.email })
     } catch (error) {
-        console.log(error.message);
+        res.render('404',{login:true})
     }
 }
 
@@ -196,7 +202,7 @@ const verifyOtp = async (req, res) => {
             res.render("register", { errormessage: "registration failed", login: true })
         }
     } catch (error) {
-        console.log(error.message);
+       
     }
 
 }
@@ -233,7 +239,7 @@ const verifyLogin = async (req, res) => {
             res.render('login', { message: "incorrect email or password", login: true })
         }
     } catch (error) {
-        console.log(error.message);
+       
 
     }
 }
@@ -243,7 +249,7 @@ const userLogout = async (req, res) => {
         req.session.destroy();
         res.redirect('/')
     } catch (error) {
-        console.log(error.message);
+       
 
     }
 
@@ -252,7 +258,7 @@ const loadForgotPass = async (req, res) => {
     try {
         res.render('forgetpass', { login: true })
     } catch (error) {
-        console.log(error.message);
+        res.render('404',{login:true})
     }
 }
 
@@ -271,7 +277,7 @@ const verifyForget = async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error.message);
+        
 
     }
 }
@@ -289,7 +295,7 @@ const forgetPasswordLoad = async (req, res) => {
 
         }
     } catch (error) {
-        console.log(error.message);
+        
 
     }
 }
@@ -301,7 +307,7 @@ const resetPassword = async (req, res) => {
         await User.findByIdAndUpdate({ _id: user_id }, { $set: { password: securePassWord, token: '' } })
         res.render('login', { message: "password changed successfully", login: true })
     } catch (error) {
-        console.log(error.message);
+        
 
     }
 }
@@ -320,7 +326,7 @@ const loadSingleProduct = async (req, res) => {
         res.render('product-single', { user: true, pro: true, name, bname, image, quantity, price, _id, username, cartCount })
 
     } catch (error) {
-        console.log(error.message);
+       
     }
 }
 
@@ -344,7 +350,7 @@ const userProfile = async (req, res) => {
 
         res.render('profile', { user: true, username, userDatas, walletHistory, cartCount })
     } catch (error) {
-        console.log(error.message);
+       
 
     }
 }
@@ -390,7 +396,7 @@ const loadCheckout = async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error.message);
+        
     }
 }
 
@@ -432,7 +438,7 @@ const loadOrderPlaced = async (req, res) => {
         const orderDate = date.toLocaleString()
         res.render('orderSuccess', { user: true, username, orderDatas, orderDate })
     } catch (error) {
-        console.log(error.message);
+      
     }
 
 }
@@ -453,7 +459,7 @@ const loadMyOrders = async (req, res) => {
         })
         res.render('myOrders', { user: true, userOrder, username })
     } catch (error) {
-
+        res.render('404',{login:true})
     }
 }
 
@@ -466,7 +472,7 @@ const orderData = async (req, res) => {
         const orderDate = date.toLocaleString()
         res.render('singleOrder', { orderDetails, login: true, username, orderDate })
     } catch (error) {
-        console.log(error.message);
+        res.render('404',{login:true})
     }
 }
 
@@ -501,7 +507,7 @@ const selectUserAddress = async (req, res) => {
 
         res.redirect('/checkout')
     } catch (error) {
-        console.log(error.message);
+      
     }
 }
 
@@ -526,7 +532,7 @@ const updateAddress = async (req, res) => {
         );
         res.redirect('/checkout')
     } catch (error) {
-        console.log(error.message);
+       
     }
 }
 
@@ -539,7 +545,7 @@ const deleteAddress = async (req, res) => {
         })
         res.redirect('/checkout')
     } catch (error) {
-        console.log(error.message);
+       
     }
 }
 
@@ -553,7 +559,7 @@ const loadEditAddress = async (req, res) => {
 
         res.render("updateAddress", { login: true, addressEditData })
     } catch (error) {
-        console.log(error.message);
+        res.render('404',{login:true})
     }
 }
 
@@ -577,7 +583,7 @@ const loadShop = async (req, res) => {
         username = req.session.userDatas.fname
         res.render('shop', { user: true, products, category, username })
     } catch (error) {
-        console.log(error.message);
+        res.render('404',{login:true})
     }
 }
 
@@ -628,9 +634,52 @@ const userShop = async (req, res) => {
         previousPage = currentPage - 1
         res.render("shop", { user: true, totalPages, currentPage, nextPage, previousPage, categoryId, sortValue, username, products, search, category, cartCount });
     } catch (err) {
-        console.log(err.message);
+        res.render('404',{login:true})
     }
 };
+
+const addMoney = async (req,res)=>{
+     req.session.walletAmount =req.body.amount;
+    const { v4: uuidv4 } = require('uuid')
+    const receiptId = uuidv4()
+    const option = {
+        amount: req.body.amount * 100,
+        currency: "INR",
+        receipt: receiptId,
+    }
+
+    instance.orders.create(option, (err, order) => {
+
+        console.log(order)
+        if (err) {
+            res.json({ error: err })
+        } else {
+            res.json({ razorpayDetails: order })
+        }
+    })
+}
+
+const addingMoneytoWallet = async(req,res)=>{
+    const paymentDetails = req.body
+    const crypto = require('crypto');
+    let hmac = crypto.createHmac('sha256', '8fEDc3nKHEBt1muQWjodKhoa')
+    hmac.update(paymentDetails['order[razorpay_order_id]'] + '|' + paymentDetails['order[razorpay_payment_id]']);
+    hmac = hmac.digest('hex')
+    if (hmac == paymentDetails['order[razorpay_signature]']) {
+        console.log("payment successss");
+        const userId = req.session.userDatas._id
+        await User.findOneAndUpdate(userId,{$inc:{wallet:req.session.walletAmount }})
+        await User.findOneAndUpdate({_id:userId},{
+            $push: {
+                wallethistory: { tdate: new Date(), amount:req.session.walletAmount, sign:"credit" }
+              }
+        })
+        req.session.walletAmount=null
+        res.json({addmoney:true})
+    }else{
+        res.json({failed:true})
+    }
+}
 
 
 
@@ -666,5 +715,7 @@ module.exports = {
     updateAddress,
     loadEditAddress,
     returnRequest,
-    userShop
+    userShop,
+    addMoney,
+    addingMoneytoWallet
 }

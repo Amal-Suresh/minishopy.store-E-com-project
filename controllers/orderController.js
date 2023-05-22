@@ -187,10 +187,7 @@ const placeOrder = async (req, res) => {
 const success = async (req, res) => {
     try {
         if (req.session.userDatas) {
-
-            console.log("sesssion true", req.body)
             const paymentDetails = req.body
-
             const crypto = require('crypto');
             let hmac = crypto.createHmac('sha256', '8fEDc3nKHEBt1muQWjodKhoa')
             hmac.update(paymentDetails['payment[razorpay_order_id]'] + '|' + paymentDetails['payment[razorpay_payment_id]']);

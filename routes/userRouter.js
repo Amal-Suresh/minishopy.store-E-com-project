@@ -101,6 +101,8 @@ userRouter.get('/removecoupon',auth.isLogin,couponContoller.removeCoupon)
 
 userRouter.get("/shop",userController.userShop)
 userRouter.get('/cancelorder',auth.isLogin,orderController.userCancelOrder)
+userRouter.post('/addmoney',auth.isLogin,userController.addMoney)
+userRouter.post('/addmoneysuccess',auth.isLogin,userController.addingMoneytoWallet)
 
 
 
