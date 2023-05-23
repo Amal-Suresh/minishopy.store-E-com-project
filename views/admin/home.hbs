@@ -6,8 +6,8 @@
                 <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
                     <i class="fa fa-chart-line fa-3x text-primary"></i>
                     <div class="ms-3">
-                        <p class="mb-2">Today Sale</p>
-                        <h6 class="mb-0">$1234</h6>
+                        <p class="mb-2">User Count</p>
+                        <h6 class="mb-0">{{countUser}}</h6>
                     </div>
                 </div>
             </div>
@@ -15,8 +15,8 @@
                 <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
                     <i class="fa fa-chart-bar fa-3x text-primary"></i>
                     <div class="ms-3">
-                        <p class="mb-2">Total Sale</p>
-                        <h6 class="mb-0">$1234</h6>
+                        <p class="mb-2">Blocked User Count</p>
+                        <h6 class="mb-0">{{countBlockedUser}}</h6>
                     </div>
                 </div>
             </div>
@@ -24,8 +24,8 @@
                 <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
                     <i class="fa fa-chart-area fa-3x text-primary"></i>
                     <div class="ms-3">
-                        <p class="mb-2">Today Revenue</p>
-                        <h6 class="mb-0">$1234</h6>
+                        <p class="mb-2">Total Sales</p>
+                        <h6 class="mb-0">${{totalAmount}}</h6>
                     </div>
                 </div>
             </div>
@@ -33,19 +33,14 @@
                 <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
                     <i class="fa fa-chart-pie fa-3x text-primary"></i>
                     <div class="ms-3">
-                        <p class="mb-2">Total Revenue</p>
-                        <h6 class="mb-0">$1234</h6>
+                        <p class="mb-2">Total Wallet Amount</p>
+                        <h6 class="mb-0">${{walletTotal}}</h6>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <!-- Sale & Revenue End -->
-
-
-
-
-
 
     <!-- Chart Start -->
     <div class="container-fluid pt-4 px-4">
@@ -71,13 +66,8 @@
 
         </div>
     </div>
-
-
     <!-- Chart End -->
-
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
-
     <script>
         var xValues = ["Ordered", "Delivered", "Shipped", "Cancelled", "Returned"];
         var yValues = [{{cOrdered}}, {{cDelivered}}, {{cShipped}}, {{cCancel}}, {{cReturned}}];
@@ -131,15 +121,10 @@ new Chart("myChartDoughnut", {
 });
 </script>
 
-
     <script>
         var mylink=document.getElementById("home")
         mylink.classList.add("active")
       </script>
-
-
-
-
 
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
@@ -163,13 +148,6 @@ new Chart("myChartDoughnut", {
             chart.draw(data, options);
         }
     </script>
-
-
-
-
-
-
-
 
 
 

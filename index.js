@@ -13,6 +13,10 @@ const cookieParser = require("cookie-parser")
 const Handlebars = require('handlebars')
 const helpers = require('./middleware/helpers')
 
+Handlebars.registerHelper('lte', function (daysCount) {
+    return daysCount<=12; 
+});
+
 Handlebars.registerHelper('eq', function (arg1, arg2) {
   return arg1 == arg2
 });

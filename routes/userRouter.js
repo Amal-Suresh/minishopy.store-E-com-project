@@ -22,10 +22,7 @@ userRouter.get('/login',auth.islogOut,userController.loadLogin)
 userRouter.get('/register', auth.islogOut, userController.loadRegister)
 // render home
 userRouter.get('/',userController.home)
-// userRouter.get('/userhome',auth.isLogin,userController.loadHome)
 
-// render shop
-// render about
 userRouter.get('/about',auth.isLogin,userController.loadAbout)
 // render checkout
 userRouter.get('/checkout',auth.isLogin,userController.loadCheckout)
@@ -69,13 +66,9 @@ userRouter.patch("/increment",auth.isLogin,cartContoller.increment);
 // <<<<<<<<<<<<<<<<<<<<<<<<< cart item decrement   >>>>>>>>>>>>>>>>>>>>>>
 
 userRouter.patch("/decrement",auth.isLogin,cartContoller.decrement);
+
 userRouter.post('/updatedetails',auth.ifUserLogged,userController.updateUserProfile)
-
-
-
 userRouter.get('/addressSelection',auth.isLogin,userController.loadNewAddress)
-
-
 userRouter.post('/addaddress',userController.addAddress)
 
 userRouter.post('/placeorder',orderController.placeOrder)

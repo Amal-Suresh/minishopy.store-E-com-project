@@ -62,6 +62,36 @@ const loadHome = async (req, res) => {
     const countCancelled = { orderStatus: "cancelled" };
     const cCancel = await Order.countDocuments(countCancelled);
 
+    const countUser = await User.countDocuments({status:true})
+    const countBlockedUser = await User.countDocuments({status:false})
+    const sumOfDelivered =  await Order.aggregate([
+      {
+        $match: {
+          orderStatus: "delivered"
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalAmount: {
+            $sum: "$finalAmount"
+          }
+        }
+      }
+    ])
+    const totalAmount = sumOfDelivered[0].totalAmount;
+
+    const totalWallet =  await User.aggregate([
+      {
+        $group: {
+          _id: null,
+          walletAmount: {
+            $sum: "$wallet"
+          }
+        }
+      }
+    ])
+    const walletTotal = totalWallet[0].walletAmount;
     // const clogs = await Order.find({orderStatus:"delivered"},'product').lean()
     // const clogsProducts =clogs.flatMap(order=> order.product).flat()
     // const clogsProductIds = clogsProducts.map(product=>product._id)
@@ -89,6 +119,11 @@ const loadHome = async (req, res) => {
       cDelivered,
       cShipped,
       cCancel,
+      countUser,
+      countBlockedUser,
+      totalAmount,
+      walletTotal
+      
     });
   } catch (error) {
     console.log(error.message);
@@ -155,6 +190,36 @@ const verifyLogin = async (req, res) => {
 
         const countCancelled = { orderStatus: "cancelled" };
         const cCancel = await Order.countDocuments(countCancelled);
+        const countUser = await User.countDocuments({status:true})
+        const countBlockedUser = await User.countDocuments({status:false})
+
+      const sumOfDelivered =  await Order.aggregate([
+          {
+            $match: {
+              orderStatus: "delivered"
+            }
+          },
+          {
+            $group: {
+              _id: null,
+              totalAmount: {
+                $sum: "$finalAmount"
+              }
+            }
+          }
+        ])
+        const totalAmount = sumOfDelivered[0].totalAmount;
+        const totalWallet =  await User.aggregate([
+          {
+            $group: {
+              _id: null,
+              walletAmount: {
+                $sum: "$wallet"
+              }
+            }
+          }
+        ])
+        const walletTotal = totalWallet[0].walletAmount;
 
         res.render("home", {
           admin: true,
@@ -167,6 +232,10 @@ const verifyLogin = async (req, res) => {
           cReturned,
           cShipped,
           cCancel,
+          countUser,
+          countBlockedUser,
+          totalAmount,
+          walletTotal
         });
       } else {
         res.render("login", {

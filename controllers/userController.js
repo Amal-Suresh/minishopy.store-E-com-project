@@ -470,7 +470,10 @@ const orderData = async (req, res) => {
         const orderDetails = await Order.findOne({ _id: orderId }).populate('product.productId').lean()
         const date = new Date(orderDetails.date)
         const orderDate = date.toLocaleString()
-        res.render('singleOrder', { orderDetails, login: true, username, orderDate })
+        const crrDate = new Date()
+        const timeDiff = Math.abs(crrDate.getTime() - date.getTime());
+        const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+        res.render('singleOrder', { orderDetails, login: true, username, orderDate,daysDiff })
     } catch (error) {
         res.render('404',{login:true})
     }

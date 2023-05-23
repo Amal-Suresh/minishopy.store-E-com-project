@@ -6,11 +6,13 @@
 				<p class="text-center text-uppercase mt-3">Login</p>
 				<form class="form text-center" action="/login" method="POST" onsubmit="return userlogin()" name="form">
 					<div class="form-group input-group-md">
-						<input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp" placeholder="Enter email">
+						<input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp"
+							placeholder="Enter email">
 					</div>
 					<div class="form-group input-group-md">
-						<input type="password" class="form-control" name="password" id="password" placeholder="Password">
-						
+						<input type="password" class="form-control" name="password" id="password"
+							placeholder="Password">
+
 					</div>
 					<div>
 						<p class="text-danger" id="errorMessage-div"></p>
@@ -26,8 +28,8 @@
 					</div>
 					{{/if}}
 					<button class="btn  btn-block btn-primary mt-4" type="submit">
-                        Login
-               </button>
+						Login
+					</button>
 					<a href="/forgetpass" class="float-right mt-2">Forgot Password? </a>
 				</form>
 			</div>
@@ -37,29 +39,28 @@
 </div>
 
 
-	<script>
-function userlogin(){
-   
-  var Email=document.form.email.value;
-  var Password=document.form.password.value;
-  var reg =    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  var passerror=(/^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/)
-  var error=document.getElementById("errorMessage-div");
+<script>
+	function userlogin() {
+		var Email = document.form.email.value;
+		var Password = document.form.password.value;
+		var reg = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+		var passerror = (/^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/)
+		var error = document.getElementById("errorMessage-div");
 
-  if(Email==""){
-      error.innerHTML='Please enter your email id'
-      return false;
-  }
-  if(reg.test(Email)==false){
-    error.innerHTML='invalid email id'
-    return false;
-  }
-  if(passerror.test(Password)==false){
-      error.innerHTML='password must contain 8 characters, at least one special character, and at least one uppercase letter'
-      return false;
-  }
-  
-  return true;
+		if (Email == "") {
+			error.innerHTML = 'Please enter your email id'
+			return false;
+		}
+		if (reg.test(Email) == false) {
+			error.innerHTML = 'invalid email id'
+			return false;
+		}
+		if (passerror.test(Password) == false) {
+			error.innerHTML = 'password must contain 8 characters, at least one special character, and at least one uppercase letter'
+			return false;
+		}
 
-}
+		return true;
+
+	}
 </script>

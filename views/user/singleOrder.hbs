@@ -122,7 +122,9 @@
         </span>
 
       {{#if (eq orderDetails.orderStatus "delivered")}} 
-        <a href="/returnorder/?id={{orderDetails._id}}"><span class="d-block fs-12 btn btn-primary mt-3">Return</span></a>   
+        {{#if (lte daysDiff)}}
+        <a href="/returnorder/?id={{orderDetails._id}}"><span class="d-block fs-12 btn btn-primary mt-3">Return</span></a>
+        {{/if}}
       {{/if}}
       {{#if (eq orderDetails.orderStatus "ordered")}} 
         <a href="/cancelorder/?id={{orderDetails._id}}"><span class="d-block fs-12 btn btn-primary mt-3">Cancel</span></a>   
