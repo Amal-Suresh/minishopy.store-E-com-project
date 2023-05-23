@@ -11,7 +11,7 @@ const cart = require('../models/cartModel')
 require("dotenv").config()
 const Razorpay = require("razorpay")
 
-var instance = new Razorpay({ key_id: process.env.RAZOR_KEYID, key_secret:process.env.RAZOR_SECRET })
+var instance = new Razorpay({ key_id: process.env.RAZOR_KEYID, key_secret: process.env.RAZOR_SECRET })
 
 
 
@@ -67,10 +67,10 @@ const sendResetPasswordMail = ((fname, email, token) => {
     transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
             console.log(error);
-         } 
+        }
         //else { 
         //     // console.log('Email sent: ' + info.response);
-           
+
         // }
     })
 })
@@ -80,7 +80,7 @@ const securePassword = async (password) => {
         const passwordHash = await bcrypt.hash(password, 10);
         return passwordHash;
     } catch (error) {
-      
+
     }
 }
 
@@ -88,7 +88,7 @@ const loadRegister = async (req, res) => {
     try {
         res.render('register', { login: true })
     } catch (error) {
-       
+
     }
 }
 
@@ -96,7 +96,7 @@ const loadLogin = async (req, res) => {
     try {
         res.render('login', { login: true })
     } catch (error) {
-       
+
     }
 }
 
@@ -119,7 +119,7 @@ const home = async (req, res) => {
         }
 
     } catch (error) {
-     
+
 
     }
 
@@ -133,7 +133,7 @@ const loadAbout = async (req, res) => {
         const cartCount = productArray.reduce((count, product) => count + product.length, 0);
         res.render('about', { user: true, username, cartCount })
     } catch (error) {
-        res.render('404',{login:true})
+        res.render('404', { login: true })
     }
 }
 
@@ -146,7 +146,7 @@ const loadContact = async (req, res) => {
         username = req.session.userDatas.fname
         res.render('contact', { user: true, username, cartCount })
     } catch (error) {
-        res.render('404',{login:true})
+        res.render('404', { login: true })
     }
 }
 
@@ -154,7 +154,7 @@ const loadOtp = async (req, res) => {
     try {
         res.render('otp', { otp: true, email: userdata.email })
     } catch (error) {
-        res.render('404',{login:true})
+        res.render('404', { login: true })
     }
 }
 
@@ -202,7 +202,7 @@ const verifyOtp = async (req, res) => {
             res.render("register", { errormessage: "registration failed", login: true })
         }
     } catch (error) {
-       
+
     }
 
 }
@@ -239,7 +239,7 @@ const verifyLogin = async (req, res) => {
             res.render('login', { message: "incorrect email or password", login: true })
         }
     } catch (error) {
-       
+
 
     }
 }
@@ -249,7 +249,7 @@ const userLogout = async (req, res) => {
         req.session.destroy();
         res.redirect('/')
     } catch (error) {
-       
+
 
     }
 
@@ -258,7 +258,7 @@ const loadForgotPass = async (req, res) => {
     try {
         res.render('forgetpass', { login: true })
     } catch (error) {
-        res.render('404',{login:true})
+        res.render('404', { login: true })
     }
 }
 
@@ -277,7 +277,7 @@ const verifyForget = async (req, res) => {
         }
 
     } catch (error) {
-        
+
 
     }
 }
@@ -295,7 +295,7 @@ const forgetPasswordLoad = async (req, res) => {
 
         }
     } catch (error) {
-        
+
 
     }
 }
@@ -307,7 +307,7 @@ const resetPassword = async (req, res) => {
         await User.findByIdAndUpdate({ _id: user_id }, { $set: { password: securePassWord, token: '' } })
         res.render('login', { message: "password changed successfully", login: true })
     } catch (error) {
-        
+
 
     }
 }
@@ -326,7 +326,7 @@ const loadSingleProduct = async (req, res) => {
         res.render('product-single', { user: true, pro: true, name, bname, image, quantity, price, _id, username, cartCount })
 
     } catch (error) {
-       
+
     }
 }
 
@@ -350,7 +350,7 @@ const userProfile = async (req, res) => {
 
         res.render('profile', { user: true, username, userDatas, walletHistory, cartCount })
     } catch (error) {
-       
+
 
     }
 }
@@ -376,27 +376,60 @@ const updateUserProfile = async (req, res) => {
 
 const loadCheckout = async (req, res) => {
     try {
-
+    console.log("reached");
         req.session.coupon = null
         req.session.couponId = null
         req.session.discount = null
-        const cartdata = await cart.find({ user: req.session?.userDatas?._id });
-        const productArray = cartdata.map(cart => cart.product);
-        const cartCount = productArray.reduce((count, product) => count + product.length, 0);
-        const username = req.session.userDatas.fname
-        const userId = req.session.userDatas._id
-        let totalAmount = req.session.totalAmount
-        const userDetails = await User.findOne({ _id: userId }).populate('address').lean()
-        const address = userDetails.address
-        if (userDetails.address.length == 0) {
-            let adressnull
-            res.render('checkout', { user: true, username, totalAmount, adressnull: true, cartCount })
-        } else {
-            res.render('checkout', { user: true, username, address, totalAmount, cartCount })
-        }
+
+        const cartdata = await cart.find({ user: req.session?.userDatas?._id }).populate('product').lean()
+
+        const products = cartdata[0].product;
+        const productIds = products.map(product => product.productId);
+        Product.find({ _id: { $in: productIds } })
+            .then(async foundProducts => {
+                const hasProductWithZeroQuantity = foundProducts.some((foundProduct, index) => {
+                    return foundProduct.quantity === 0 || foundProduct.quantity < products[index].quantity;
+                });
+                if (hasProductWithZeroQuantity) {
+
+                    const findCart = await cart.findOne({ user: req.session.userId }).populate('product.productId').lean();
+                    username = req.session.userDatas.fname
+                    const subPrice = findCart.product.reduce((acc, curr) => acc += curr.totalPrice, 0);
+                    const discount = 0
+                    const deliveryCharge = 0
+                    const grandTotal = subPrice + discount + deliveryCharge;
+                    req.session.totalAmount = grandTotal
+                    const cartdata = await cart.find({ user: req.session?.userDatas?._id });
+                    const productArray = cartdata.map(cart => cart.product); 
+                    const cartCount = productArray.reduce((count, product) => count + product.length, 0); 
+                    const errorMessage = 'Some products have insufficient quantity.';
+
+                    res.render('cart', { user: true, findCart, subPrice, grandTotal, username,cartCount,errorMessage });
+                    console.log(errorMessage);
+                } else {
+                    console.log('All products have sufficient quantity.');
+                    const productArray = cartdata.map(cart => cart.product);
+                    const cartCount = productArray.reduce((count, product) => count + product.length, 0);
+                    const username = req.session.userDatas.fname
+                    const userId = req.session.userDatas._id
+                    let totalAmount = req.session.totalAmount
+                    const userDetails = await User.findOne({ _id: userId }).populate('address').lean()
+                    const address = userDetails.address
+                    if (userDetails.address.length == 0) {
+                        let adressnull
+                        res.render('checkout', { user: true, username, totalAmount, adressnull: true, cartCount })
+                    } else {
+                        res.render('checkout', { user: true, username, address, totalAmount, cartCount })
+                    }
+
+                }
+            })
+
+
+
 
     } catch (error) {
-        
+
     }
 }
 
@@ -438,7 +471,7 @@ const loadOrderPlaced = async (req, res) => {
         const orderDate = date.toLocaleString()
         res.render('orderSuccess', { user: true, username, orderDatas, orderDate })
     } catch (error) {
-      
+
     }
 
 }
@@ -459,7 +492,7 @@ const loadMyOrders = async (req, res) => {
         })
         res.render('myOrders', { user: true, userOrder, username })
     } catch (error) {
-        res.render('404',{login:true})
+        res.render('404', { login: true })
     }
 }
 
@@ -473,9 +506,9 @@ const orderData = async (req, res) => {
         const crrDate = new Date()
         const timeDiff = Math.abs(crrDate.getTime() - date.getTime());
         const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-        res.render('singleOrder', { orderDetails, login: true, username, orderDate,daysDiff })
+        res.render('singleOrder', { orderDetails, login: true, username, orderDate, daysDiff })
     } catch (error) {
-        res.render('404',{login:true})
+        res.render('404', { login: true })
     }
 }
 
@@ -510,7 +543,7 @@ const selectUserAddress = async (req, res) => {
 
         res.redirect('/checkout')
     } catch (error) {
-      
+
     }
 }
 
@@ -535,7 +568,7 @@ const updateAddress = async (req, res) => {
         );
         res.redirect('/checkout')
     } catch (error) {
-       
+
     }
 }
 
@@ -548,7 +581,7 @@ const deleteAddress = async (req, res) => {
         })
         res.redirect('/checkout')
     } catch (error) {
-       
+
     }
 }
 
@@ -562,7 +595,7 @@ const loadEditAddress = async (req, res) => {
 
         res.render("updateAddress", { login: true, addressEditData })
     } catch (error) {
-        res.render('404',{login:true})
+        res.render('404', { login: true })
     }
 }
 
@@ -586,7 +619,7 @@ const loadShop = async (req, res) => {
         username = req.session.userDatas.fname
         res.render('shop', { user: true, products, category, username })
     } catch (error) {
-        res.render('404',{login:true})
+        res.render('404', { login: true })
     }
 }
 
@@ -603,7 +636,7 @@ const userShop = async (req, res) => {
         if (req.query.page) {
             page = req.query.page
         }
-        
+
         const limit = 8;
         var search = req.query.search || ''; // Get the search value from req.query or set to empty string if not present
         console.log(search, "search text");
@@ -637,12 +670,12 @@ const userShop = async (req, res) => {
         previousPage = currentPage - 1
         res.render("shop", { user: true, totalPages, currentPage, nextPage, previousPage, categoryId, sortValue, username, products, search, category, cartCount });
     } catch (err) {
-        res.render('404',{login:true})
+        res.render('404', { login: true })
     }
 };
 
-const addMoney = async (req,res)=>{
-     req.session.walletAmount =req.body.amount;
+const addMoney = async (req, res) => {
+    req.session.walletAmount = req.body.amount;
     const { v4: uuidv4 } = require('uuid')
     const receiptId = uuidv4()
     const option = {
@@ -662,7 +695,7 @@ const addMoney = async (req,res)=>{
     })
 }
 
-const addingMoneytoWallet = async(req,res)=>{
+const addingMoneytoWallet = async (req, res) => {
     const paymentDetails = req.body
     const crypto = require('crypto');
     let hmac = crypto.createHmac('sha256', '8fEDc3nKHEBt1muQWjodKhoa')
@@ -671,16 +704,16 @@ const addingMoneytoWallet = async(req,res)=>{
     if (hmac == paymentDetails['order[razorpay_signature]']) {
         console.log("payment successss");
         const userId = req.session.userDatas._id
-        await User.findOneAndUpdate(userId,{$inc:{wallet:req.session.walletAmount }})
-        await User.findOneAndUpdate({_id:userId},{
+        await User.findOneAndUpdate(userId, { $inc: { wallet: req.session.walletAmount } })
+        await User.findOneAndUpdate({ _id: userId }, {
             $push: {
-                wallethistory: { tdate: new Date(), amount:req.session.walletAmount, sign:"credit" }
-              }
+                wallethistory: { tdate: new Date(), amount: req.session.walletAmount, sign: "credit" }
+            }
         })
-        req.session.walletAmount=null
-        res.json({addmoney:true})
-    }else{
-        res.json({failed:true})
+        req.session.walletAmount = null
+        res.json({ addmoney: true })
+    } else {
+        res.json({ failed: true })
     }
 }
 

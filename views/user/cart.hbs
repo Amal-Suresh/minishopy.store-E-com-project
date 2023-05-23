@@ -149,7 +149,11 @@
               <span id="grandTotal1">${{grandTotal}}</span>
             </p>
           </div>
-          <p class="text-center"><a href="/checkout" class="btn btn-primary py-3 px-4">Proceed to Checkout</a></p>
+          <div>
+            <p style="color: red;font-weight: bold;">{{errorMessage}}</p>
+          </div>
+        <p class="text-center"><a href="/checkout" class="btn btn-primary py-3 px-4" id="checkout-btn">Proceed to Checkout</a></p>
+
         </div>
       </div>
     </div>
@@ -246,7 +250,15 @@
 <script src="sweetalert2.all.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
 <script>
+
+
+ 
+
   function increase(id, quantity) {
     const check = document.getElementById(`${id}_data-value`).value;
     console.log(check)
@@ -381,5 +393,3 @@
 
 <script src="sweetalert2.all.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
