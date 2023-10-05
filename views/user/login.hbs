@@ -1,6 +1,6 @@
-<div class="container mt-2">
-	<div class="row justify-content-center w-100 p-2">
-		<div class="m-1 col-12 col-md-6 col-lg-5 shadow-sm p-3 mb-5 bg-white border rounded">
+{{!-- <div class="container mt-2">
+	<div class=" justify-content-center w-100 p-2">
+		<div class="m-1 shadow-sm p-3 mb-5 bg-white border rounded  w-100">
 			<div class="pt-5 pb-5">
 				<img class="rounded mx-auto d-block" src="/images/minishopylogo.png" alt="" width=70px height=70px>
 				<p class="text-center text-uppercase mt-3">Login</p>
@@ -36,7 +36,52 @@
 			<a href="/register" class="text-center d-block mt-2">Create an account? </a>
 		</div>
 	</div>
-</div>
+</div> --}}
+
+
+
+
+
+
+{{!-- -------------------------------------------------------------------------------------------------- --}}
+ <div class="row w-100 d-flex justify-content-center " style="padding-top: 20vh">
+	<div class="mx-auto col-12  col-md-10 col-lg-4 rounded border p-4">
+		<img class="rounded mx-auto d-block" src="/images/minishopylogo.png" alt="" width=70px height=70px>
+				<p class="text-center text-uppercase mt-3">Login</p>
+				<form class="form text-center" action="/login" method="POST" onsubmit="return userlogin()" name="form">
+					<div class="form-group input-group-md mt-4">
+						<input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp"
+							placeholder="Enter email">
+					</div>
+					<div class="form-group input-group-md mt-4">
+						<input type="password" class="form-control" name="password" id="password"
+							placeholder="Password">
+
+					</div>
+					<div>
+						<p class="text-danger" id="errorMessage-div"></p>
+					</div>
+					{{#if sucessmessage}}
+					<div>
+						<span class="text-danger">{{sucessmessage}}</span>
+					</div>
+					{{/if}}
+					{{#if errormessage}}
+					<div>
+						<span class="text-danger">{{errormessage}}</span>
+					</div>
+					{{/if}}
+					<button class="btn  btn-block btn-primary mt-4" type="submit">
+						Login
+					</button>
+					<a href="/forgetpass" class="float-right mt-2">Forgot Password? </a>
+				</form>
+	
+
+	</div>
+	
+ </div>
+{{!-- ----------------------------------------------------------------------------------------------- --}}
 
 
 <script>
