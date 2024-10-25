@@ -44,8 +44,7 @@ const placeOrder = async (req, res) => {
         req.session.address = addres
         const userCart = await Cart.findOne({ user: userId }).populate('product').lean()
         if (payment == "COD") {
-            console.log('entering to the cod');
-            
+           
             if (req.session.couponId != null) {
                 discount = req.session.discount
             }
@@ -85,40 +84,32 @@ const placeOrder = async (req, res) => {
 
             username = req.session.userDatas.fname
             if (saveOrder) {
-                console.log("cod success");
+                
                 const removeCart = await Cart.deleteOne({ user: userId })
 
                 res.json({ url: 'ordersuccess' });
             }
 
         } else if(payment == "Online"){
-            console.log('entering to the online');
-            //payment integration
+        
             const { v4: uuidv4 } = require('uuid')
             const receiptId = uuidv4()
-
-
             const price = parseInt(totalAmount);
-
             const option = {
                 amount: price * 100,
                 currency: "INR",
                 receipt: receiptId,
             }
-
             instance.orders.create(option, (err, order) => {
-
-                console.log(order)
                 if (err) {
-                    res.json({ error: err })
+                 res.json({ error: err })
                 } else {
                     res.json({ razorpayDetails: order })
                 }
             })
 
         }else if(payment == "Wallet"){
-            console.log("reached wallet");
-
+            
            const userId = req.session.userDatas._id
            const userData = await User.findById(userId).lean()
            if(userData.wallet>= req.session.totalAmount){
@@ -189,7 +180,7 @@ const success = async (req, res) => {
         if (req.session.userDatas) {
             const paymentDetails = req.body
             const crypto = require('crypto');
-            let hmac = crypto.createHmac('sha256', '8fEDc3nKHEBt1muQWjodKhoa')
+            let hmac = crypto.createHmac('sha256', 'z59wx8SUnVdiP4nJMbFfMQoF')
             hmac.update(paymentDetails['payment[razorpay_order_id]'] + '|' + paymentDetails['payment[razorpay_payment_id]']);
             hmac = hmac.digest('hex')
             if (hmac == paymentDetails['payment[razorpay_signature]']) {

@@ -334,7 +334,7 @@ $(document).ready(function() {
     const order = value.razorpayDetails
     // razor pay
     var options = {
-      "key": "rzp_test_1qaKi1mXcnedgJ", // Enter the Key ID generated from the Dashboard
+      "key": "rzp_test_67P8JNmUScdIYd", // Enter the Key ID generated from the Dashboard
       "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
       "currency": "INR",
       "name": "Acme Corp", //your business name
@@ -363,6 +363,7 @@ $(document).ready(function() {
   }
 
   function veryfyPayment(payment, order) {
+    console.log("called ")
 
     $.ajax({
       url: "/success",
