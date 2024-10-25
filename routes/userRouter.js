@@ -23,11 +23,11 @@ userRouter.get('/register', auth.islogOut, userController.loadRegister)
 // render home
 userRouter.get('/',userController.home)
 
-userRouter.get('/about',auth.isLogin,userController.loadAbout)
+userRouter.get('/about',userController.loadAbout)
 // render checkout
 userRouter.get('/checkout',auth.isLogin,userController.loadCheckout)
 // render contact
-userRouter.get('/contact',auth.isLogin,userController.loadContact)
+userRouter.get('/contact',userController.loadContact)
 
 userRouter.post('/register', userController.signupSubmit)
 userRouter.get('/otp', userController.loadOtp)
@@ -92,7 +92,7 @@ userRouter.get('/editaddress',userController.loadEditAddress)
 userRouter.get('/returnorder',auth.isLogin,userController.returnRequest)
 userRouter.get('/removecoupon',auth.isLogin,couponContoller.removeCoupon)
 
-userRouter.get("/shop",userController.userShop)
+userRouter.get("/shop",auth.isLogin,userController.userShop)
 userRouter.get('/cancelorder',auth.isLogin,orderController.userCancelOrder)
 userRouter.post('/addmoney',auth.isLogin,userController.addMoney)
 userRouter.post('/addmoneysuccess',auth.isLogin,userController.addingMoneytoWallet)

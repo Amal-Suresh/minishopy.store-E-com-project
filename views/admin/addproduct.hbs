@@ -57,8 +57,7 @@
 
 
 <script>
-  function validateadd() {
-
+ function validateadd() {
     var name = document.form.name.value;
     var bame = document.form.brand.value;
     var quantity = document.form.quantity.value;
@@ -68,50 +67,47 @@
     var filePath = fileInput.value;
     var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
 
-
-    var nameerror = (/^[A-Za-z]+$/);
-    var numbererror = (/^[1-9]\d*$/);
+   
+    var nameerror = /^[A-Za-z0-9\s\-]+$/;
+    var numbererror = /^[1-9]\d*$/;
 
     var error = document.getElementById("errorMessage-div");
 
     if (name == "") {
-      error.innerHTML = 'Please enter product name'
-      return false;
+        error.innerHTML = 'Please enter product name';
+        return false;
     }
     if (bame == "") {
-      error.innerHTML = 'Please enter brand name'
-      return false;
+        error.innerHTML = 'Please enter brand name';
+        return false;
     }
     if (nameerror.test(name) == false) {
-      error.innerHTML = 'invalid product name'
-      return false;
+        error.innerHTML = 'Invalid product name';
+        return false;
     }
     if (nameerror.test(bame) == false) {
-      error.innerHTML = 'invalid brand name'
-      return false;
+        error.innerHTML = 'Invalid brand name';
+        return false;
     }
     if (!allowedExtensions.exec(filePath)) {
-      error.innerHTML = 'Please upload an image file (jpg, jpeg, png, or gif)';
-      fileInput.value = '';
-      return false;
+        error.innerHTML = 'Please upload an image file (jpg, jpeg, png, or gif)';
+        fileInput.value = '';
+        return false;
     }
     if (numbererror.test(price) == false) {
-      error.innerHTML = 'invalid price'
-      return false;
+        error.innerHTML = 'Invalid price';
+        return false;
     }
-
     if (numbererror.test(quantity) == false) {
-      error.innerHTML = 'invalid quantity'
-      return false;
+        error.innerHTML = 'Invalid quantity';
+        return false;
     }
     if (category == "Select Category") {
-      error.innerHTML = 'select a category'
-      return false;
+        error.innerHTML = 'Select a category';
+        return false;
     }
 
-
-
     return true;
+}
 
-  }
 </script>

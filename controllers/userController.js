@@ -127,7 +127,7 @@ const home = async (req, res) => {
 
 const loadAbout = async (req, res) => {
     try {
-        username = req.session.userDatas.fname
+        username = req.session.userDatas?.fname
         const cartdata = await cart.find({ user: req.session?.userDatas?._id });
         const productArray = cartdata.map(cart => cart.product);
         const cartCount = productArray.reduce((count, product) => count + product.length, 0);
@@ -143,7 +143,7 @@ const loadContact = async (req, res) => {
         const cartdata = await cart.find({ user: req.session?.userDatas?._id });
         const productArray = cartdata.map(cart => cart.product);
         const cartCount = productArray.reduce((count, product) => count + product.length, 0);
-        username = req.session.userDatas.fname
+        username = req.session.userDatas?.fname
         res.render('contact', { user: true, username, cartCount })
     } catch (error) {
         res.render('404', { login: true })
@@ -629,7 +629,7 @@ const userShop = async (req, res) => {
         const cartdata = await cart.find({ user: req.session?.userDatas?._id });
         const productArray = cartdata.map(cart => cart.product);
         const cartCount = productArray.reduce((count, product) => count + product.length, 0);
-        const username = req.session.userDatas.fname
+        const username = req.session.userDatas?.fname 
         const category = await Category.find({ status: true }).lean()
 
         var page = 1;
@@ -670,6 +670,8 @@ const userShop = async (req, res) => {
         previousPage = currentPage - 1
         res.render("shop", { user: true, totalPages, currentPage, nextPage, previousPage, categoryId, sortValue, username, products, search, category, cartCount });
     } catch (err) {
+        console.log(err);
+        
         res.render('404', { login: true })
     }
 };

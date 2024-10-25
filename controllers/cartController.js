@@ -4,54 +4,63 @@ const User = require('../models/userModel')
 
 const cart = async (req, res) => {
     try {
-        
         const productId = req.body.proId;
-        const username = req.session.userDatas.fname
+        const username = req.session.userDatas?.fname || 'Guest';
         const userDataSession = req.session.userDatas;
         const userId = userDataSession._id;
         const userData = await User.findById(userDataSession._id);
         const productData = await Product.findById(productId);
         const userCart = await Cart.findOne({ user: userId });
-        if(productData.quantity!=0){
-        if (userCart) {
-            const productExistIndex = userCart.product.findIndex(
-                (product) => product.productId == productId
-            );
 
-            if (productExistIndex >= 0) {
-                res.json({ qty:true});
-            } else {
-                await Cart.findOneAndUpdate(
-                    { user: userId },
-                    {
-                        $push: {
-                            product: { productId: productId, price: productData.price, totalPrice: productData.price },
-                        },
-                    }
+        // Check if the product is in stock
+        if (productData.quantity != 0) {
+            if (userCart) {
+                // Check if the product already exists in the cart
+                const productExistIndex = userCart.product.findIndex(
+                    (product) => product.productId == productId
                 );
-                res.json({message:true})
+
+                if (productExistIndex >= 0) {
+                    // Product already in the cart
+                    return res.json({ qty: true });
+                } else {
+                    // Add the new product to the cart
+                    await Cart.findOneAndUpdate(
+                        { user: userId },
+                        {
+                            $push: {
+                                product: { 
+                                    productId: productId, 
+                                    price: productData.price, 
+                                    totalPrice: productData.price 
+                                },
+                            },
+                        }
+                    );
+                    return res.json({ message: true });
+                }
+            } else {
+                // Create a new cart for the user
+                const data = new Cart({
+                    user: userId,
+                    product: [
+                        {
+                            productId: productId,
+                            price: productData.price,
+                            totalPrice: productData.price,
+                            image: productData.image
+                        },
+                    ],
+                });
+                await data.save();
+                return res.json({ message: true });
             }
         } else {
-            const data = new Cart({
-                user: userId,
-                product: [
-                    {
-                        productId: productId,
-                        price: productData.price,
-                        totalPrice: productData.price,
-                        image: productData.image
-                    },
-                ],
-            });
-            await data.save();
-            res.json({message:true})   
+            // Product out of stock
+            return res.json({ stock: "out of stock" });
         }
-    }else{
-        res.json({stock:"out of stock"})
-    }
-
     } catch (error) {
-        res.send(error.message);
+        return res.status(500).send(error.message); // Ensure a single error response is sent
     }
 };
 

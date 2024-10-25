@@ -1,16 +1,20 @@
 const User = require('../models/userModel')
 
-const isLogin = async(req,res,next)=>{
+const isLogin = async (req, res, next) => {
     try {
-        if(req.session.userId){} 
-        else{
-            res.redirect('/login')
+        // Check if userId is set in the session
+        if (req.session.userId) {
+            next(); // Proceed to the next middleware/route handler
+        } else {
+            console.log("User is not logged in, redirecting to login."); // Debugging log
+            return res.redirect('/login'); // Redirect to login
         }
-        next()     
     } catch (error) {
-        console.log(error.message);   
+        console.error("Error in isLogin middleware:", error.message);
+        return res.status(500).send("Internal Server Error"); // Handle errors gracefully
     }
-}
+};
+
 
 const islogOut = async(req,res,next)=>{
     try {

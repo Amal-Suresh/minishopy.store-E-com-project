@@ -160,67 +160,48 @@ const insertAdmin = async (req, res) => {
 
 const verifyLogin = async (req, res) => {
   try {
-    const email = req.body.email;
-    const password = req.body.password;
-    const adminData = await Admin.findOne({ email: email });
+    const { email, password } = req.body;
+    const adminData = await Admin.findOne({ email });
+
     if (adminData) {
       const passwordMatch = await bcrypt.compare(password, adminData.password);
       if (passwordMatch) {
+        // Set session data
         req.session.adminId = adminData._id;
         req.session.adminName = adminData.fname;
 
-        const countCod = { paymentMethod: "COD" };
-        const cCod = await Order.countDocuments(countCod);
-        const countOnline = { paymentMethod: "Online" };
-        const cOnline = await Order.countDocuments(countOnline);
-        const countWallet = { paymentMethod: "Wallet" };
-        const cWallet = await Order.countDocuments(countWallet);
+        // Count documents for various payment methods and statuses
+        const cCod = await Order.countDocuments({ paymentMethod: "COD" });
+        const cOnline = await Order.countDocuments({ paymentMethod: "Online" });
+        const cWallet = await Order.countDocuments({ paymentMethod: "Wallet" });
 
-        const countDelivered = { orderStatus: "delivered" };
-        const cDelivered = await Order.countDocuments(countDelivered);
+        const cDelivered = await Order.countDocuments({ orderStatus: "delivered" });
+        const cOrdered = await Order.countDocuments({ orderStatus: "ordered" });
+        const cReturned = await Order.countDocuments({ orderStatus: "returned" });
+        const cShipped = await Order.countDocuments({ orderStatus: "shipped" });
+        const cCancel = await Order.countDocuments({ orderStatus: "cancelled" });
 
-        const countOrdered = { orderStatus: "ordered" };
-        const cOrdered = await Order.countDocuments(countOrdered);
+        const countUser = await User.countDocuments({ status: true });
+        const countBlockedUser = await User.countDocuments({ status: false });
 
-        const countReturned = { orderStatus: "returned" };
-        const cReturned = await Order.countDocuments(countReturned);
+        // Aggregate to calculate the sum of delivered order amounts
+        const sumOfDelivered = await Order.aggregate([
+          { $match: { orderStatus: "delivered" } },
+          { $group: { _id: null, totalAmount: { $sum: "$finalAmount" } } }
+        ]);
 
-        const countShipped = { orderStatus: "shipped" };
-        const cShipped = await Order.countDocuments(countShipped);
+        // Set totalAmount to 0 if no delivered orders found
+        const totalAmount = sumOfDelivered.length > 0 ? sumOfDelivered[0].totalAmount : 0;
 
-        const countCancelled = { orderStatus: "cancelled" };
-        const cCancel = await Order.countDocuments(countCancelled);
-        const countUser = await User.countDocuments({status:true})
-        const countBlockedUser = await User.countDocuments({status:false})
+        // Aggregate to calculate the total wallet amount
+        const totalWallet = await User.aggregate([
+          { $group: { _id: null, walletAmount: { $sum: "$wallet" } } }
+        ]);
 
-      const sumOfDelivered =  await Order.aggregate([
-          {
-            $match: {
-              orderStatus: "delivered"
-            }
-          },
-          {
-            $group: {
-              _id: null,
-              totalAmount: {
-                $sum: "$finalAmount"
-              }
-            }
-          }
-        ])
-        const totalAmount = sumOfDelivered[0].totalAmount;
-        const totalWallet =  await User.aggregate([
-          {
-            $group: {
-              _id: null,
-              walletAmount: {
-                $sum: "$wallet"
-              }
-            }
-          }
-        ])
-        const walletTotal = totalWallet[0].walletAmount;
+        // Set walletTotal to 0 if no wallet data found
+        const walletTotal = totalWallet.length > 0 ? totalWallet[0].walletAmount : 0;
 
+        // Render home page with all data
         res.render("home", {
           admin: true,
           dash: true,
@@ -238,14 +219,16 @@ const verifyLogin = async (req, res) => {
           walletTotal
         });
       } else {
+        // Incorrect password
         res.render("login", {
-          message: "incorrect email or password",
+          message: "Incorrect email or password",
           login: true,
         });
       }
     } else {
+      // Email not found
       res.render("login", {
-        message: "incorrect email or password",
+        message: "Incorrect email or password",
         login: true,
       });
     }
@@ -253,6 +236,7 @@ const verifyLogin = async (req, res) => {
     console.log(error.message);
   }
 };
+
 
 const listUsers = async (req, res) => {
   try {
