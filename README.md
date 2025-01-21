@@ -49,7 +49,7 @@
 ## **Screenshots** 📸
 
 ### **Home Page**:  
-![Home Page](https://drive.google.com/uc?export=view&id=1sLBgtlEs1YwZ6drTN9i8pYS7OeuJeRID)
+![Home Page](https://drive.google.com/file/d/1v7vIXQhGuXu87e2fizyonconkG4DHyKO/view?usp=sharing)
 *Home Page showing the platform's footwear products and categories.*
 
 ---
